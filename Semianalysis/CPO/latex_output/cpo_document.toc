@@ -1,0 +1,62 @@
+\contentsline {section}{\numberline {1}Part 1: CPO Total Cost of Ownership (TCO) Analysis}{5}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Typical AI Cluster Networking Configuration and TCO}{6}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}CPO Scale-out Power Budgets}{8}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}CPO Scale-out Total Cost of Ownership (TCO)}{13}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}CPO for Scale-up Networks}{15}{subsection.1.4}%
+\contentsline {subsubsection}{\numberline {1.4.1}Scale-out vs Scale-up TAM}{15}{subsubsection.1.4.1}%
+\contentsline {subsubsection}{\numberline {1.4.2}Copper vs Optics for Scale-Up: World Sizes, Density and Reach}{17}{subsubsection.1.4.2}%
+\contentsline {subsubsection}{\numberline {1.4.3}Copper vs Optics for Scale-Up: Scaling Bandwidth}{19}{subsubsection.1.4.3}%
+\contentsline {subsection}{\numberline {1.5}When will CPO be ready for Primetime?}{20}{subsection.1.5}%
+\contentsline {section}{\numberline {2}Part 2: CPO Introduction and Implementation}{23}{section.2}%
+\contentsline {subsection}{\numberline {2.1}What is CPO about and why is everyone so excited?}{23}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Co-packaged Copper}{26}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Past obstacles to CPO market readiness: Why only now?}{27}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Evolving beyond DSP-based Transceivers: From LPO to CPO}{28}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.1}The Crusade Against DSP}{30}{subsubsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.5}Why CPO? The I/O challenge, BW density, and bottlenecks}{30}{subsection.2.5}%
+\contentsline {subsubsection}{\numberline {2.5.1}Input/Output (I/O) Speedbumps and Roadblocks}{31}{subsubsection.2.5.1}%
+\contentsline {subsubsection}{\numberline {2.5.2}Electrical SerDes Scaling Bottlenecks}{32}{subsubsection.2.5.2}%
+\contentsline {subsubsection}{\numberline {2.5.3}SerDes Scaling Plateau as a Roadblock for Scaling NVLink}{33}{subsubsection.2.5.3}%
+\contentsline {subsection}{\numberline {2.6}Wide I/O vs SerDes}{35}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.7}Link Resiliency}{36}{subsection.2.7}%
+\contentsline {section}{\numberline {3}Part 3: Bringing CPO to Market and deployment challenges}{38}{section.3}%
+\contentsline {subsection}{\numberline {3.1}CPO optical engine manufacturing considerations and go to market}{38}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Host and Optical Engine Packaging}{38}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}TSMC COUPE is emerging as the integration option of choice}{39}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Packaging the OEs with the host}{43}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}FAUs and Fiber Coupling}{44}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}Edge Coupling (EC)}{44}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}Grating Coupling (GC)}{45}{subsubsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.6}Laser Type and Wavelength Division Multiplexing (WDM)}{46}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Modulator Types}{48}{subsection.3.7}%
+\contentsline {subsubsection}{\numberline {3.7.1}Mach-Zehnder Modulator (MZM)}{48}{subsubsection.3.7.1}%
+\contentsline {subsubsection}{\numberline {3.7.2}Micro-Ring Modulators (MRMs)}{49}{subsubsection.3.7.2}%
+\contentsline {subsubsection}{\numberline {3.7.3}Electro-Absorption Modulators (EAM)}{51}{subsubsection.3.7.3}%
+\contentsline {subsection}{\numberline {3.8}OE roadmap -- scaling OEs}{53}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.9}Key approaches for scaling bandwidth}{53}{subsection.3.9}%
+\contentsline {subsection}{\numberline {3.10}CPO adoption pace and deployment challenges}{55}{subsection.3.10}%
+\contentsline {subsection}{\numberline {3.11}Proprietary solutions vs standards}{56}{subsection.3.11}%
+\contentsline {subsection}{\numberline {3.12}Serviceability and reliability}{57}{subsection.3.12}%
+\contentsline {section}{\numberline {4}Part 4: CPO Products of Today and Tomorrow}{58}{section.4}%
+\contentsline {subsection}{\numberline {4.1}NVIDIA CPO}{58}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Quantum-X Photonics}{59}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}Spectrum-X Photonics}{63}{subsubsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.2}The Broadcom CPO Switch Portfolio}{67}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Intel's CPO Roadmap}{72}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}MediaTek CPO plans}{73}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}CPO Focused Companies}{73}{subsection.4.5}%
+\contentsline {subsubsection}{\numberline {4.5.1}Ayar Labs}{74}{subsubsection.4.5.1}%
+\contentsline {subsubsection}{\numberline {4.5.2}Nubis}{78}{subsubsection.4.5.2}%
+\contentsline {subsubsection}{\numberline {4.5.3}Celestial AI}{80}{subsubsection.4.5.3}%
+\contentsline {subsubsection}{\numberline {4.5.4}Lightmatter}{90}{subsubsection.4.5.4}%
+\contentsline {subsubsection}{\numberline {4.5.5}Xscape Photonics}{94}{subsubsection.4.5.5}%
+\contentsline {subsubsection}{\numberline {4.5.6}Ranovus}{95}{subsubsection.4.5.6}%
+\contentsline {subsubsection}{\numberline {4.5.7}Scintil}{96}{subsubsection.4.5.7}%
+\contentsline {section}{\numberline {5}Part 5: NVIDIA's CPO Supply Chain}{99}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Optical Engines}{99}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}External Laser Source (ELS)}{99}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Fiber Attach Units (FAUs)}{100}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Fiber Shuffle Box}{102}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}MPO Connectors}{103}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}MT Ferrules}{103}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Manufacturing, Assembling, and the Testing Processes}{104}{subsection.5.7}%
