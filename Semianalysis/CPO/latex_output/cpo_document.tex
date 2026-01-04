@@ -16,6 +16,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{newunicodechar}
 \usepackage[most]{tcolorbox}
+\usepackage{enumitem}
 
 \linespread{1.15}
 
@@ -219,9 +220,37 @@ CPO는 layer 수를 일정하게 유지하면서 전력과 비용을 줄이는 �
 \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: DSP, LPO 그리고 CPO의 전력 비교}]
 \textbf{DSP (Digital Signal Processing) Transceiver}: 신호 처리 기능이 내장된 전통적인 플러그형 트랜시버로, 800G당 약 16-17W 소비.
 
-\textbf{LPO (Linear-drive Pluggable Optics)}: DSP 기능을 제거한 저전력 트랜시버로, DSP 대비 36\% 전력 절감.
+\textit{전력 소비 원인:}
+\begin{itemize}
+\item \textbf{Digital signal processing chip}: 신호 품질 향상을 위한 복잡한 알고리즘 실행으로 5-6W 소비
+\item \textbf{Electro-optic/Opto-electric conversion (E/O, O/E)}: 전기 신호와 광 신호 간 변환에 4-5W 소비
+\item \textbf{Integrated laser source}: 각 transceiver마다 독립적인 laser 작동에 3-4W 소비
+\item \textbf{Cooling 및 power management circuit}: 열 관리와 전력 변환에 2-3W 소비
+\item \textbf{긴 electrical signal path}: Pluggable form factor로 인한 신호 감쇠와 재생에 추가 전력 필요
+\end{itemize}
+
+\textbf{LPO (Linear-drive Pluggable Optics)}: DSP 기능을 제거한 저전력 트랜시버로, DSP 대비 36\% 전력 절감 (약 10-11W).
+
+\textit{전력 절감 메커니즘:}
+\begin{itemize}
+\item \textbf{DSP chip 제거}: Digital signal processing을 switch ASIC의 SerDes로 이동하여 5-6W 절감
+\item \textbf{Analog direct drive}: 복잡한 digital modulation 없이 linear drive 방식으로 laser 구동
+\item \textbf{Energy efficiency}: 비트당 에너지 효율이 16.3pJ/bit (DSP)에서 9.4pJ/bit로 개선
+\item \textbf{단점}: 짧은 전송 거리 (일반적으로 100m 이하), 높은 signal integrity 요구
+\end{itemize}
 
 \textbf{CPO (Co-Packaged Optics)}: 광학 엔진과 외부 레이저를 스위치에 통합하여 800G당 4-5W만 소비하며, DSP 대비 73\% 전력 절감을 달성합니다.
+
+\textit{획기적인 전력 절감 원리:}
+\begin{itemize}
+\item \textbf{극단적 path 단축}: Switch ASIC과 optical engine 간 electrical signal path가 수십 cm에서 수 mm로 단축되어 signal attenuation 최소화 (약 2-3W 절감)
+\item \textbf{Pluggable interface 제거}: Cable connector와 pluggable interface의 전력 손실 제거 (약 1-2W 절감)
+\item \textbf{Centralized laser}: External Light Source (ELS)가 여러 optical engine에 laser 공급하여 laser당 전력 효율 향상 (약 2-3W 절감)
+\item \textbf{Unified cooling}: Switch와 optical component가 단일 cooling system 공유로 overhead 감소 (약 1W 절감)
+\item \textbf{최적화된 power distribution}: 단일 package 내 power management로 conversion loss 최소화 (약 0.5-1W 절감)
+\item \textbf{최고 energy efficiency}: 비트당 에너지 효율 6.3pJ/bit 달성, DSP 대비 61\% 향상
+\end{itemize}
+
 \end{tcolorbox}
 
 이러한 수치는 ECOC 2025에서 발표되고 제출된 Meta의 논문에서 제시된 수치와 매우 유사하다. 
@@ -242,13 +271,34 @@ CPO로의 완전한 전환은 DSP optics 대비 훨씬 더 큰 절감을 제공�
 
 \textbf{External Light Source (ELS)}: CPO 시스템에서 여러 optical engine에 레이저 광을 공급하는 중앙집중식 레이저 소스입니다. 각 트랜시버마다 별도의 레이저를 사용하는 것보다 효율적이며, 유지보수가 용이합니다.
 
-\textbf{전력 트레이드오프}:
+\textbf{전력 Tradeoff 상세 계산}:
+
+Networking 전력 구성 (DSP 기준선):
 \begin{itemize}
-\item CPO로 전환 시 transceiver 전력은 84\% 대폭 감소
-\item 하지만 OE와 ELS를 스위치에 추가하면서 \textbf{스위치 전력이 23\% 증가}
-\item 절감된 전력의 일부가 상쇄되는 효과 발생
-\item 그럼에도 불구하고 전체 networking 전력은 여전히 23\% 감소 (3-layer 기준)
+\item Optical transceiver: 전체 networking 전력의 \textbf{45\%} 차지
+\item Switch ASIC 및 기타 구성요소: 전체 networking 전력의 \textbf{55\%} 차지
 \end{itemize}
+
+CPO 전환 시 전력 변화:
+\begin{itemize}
+\item \textbf{Transceiver 전력}: 45\% $\rightarrow$ 45\% $\times$ (1 - 0.84) = \textbf{7.2\%}
+  \begin{itemize}
+  \item 84\% 감소하지만, 원래 전체의 45\%만 차지했으므로
+  \item 실제 절감량: 45\% - 7.2\% = \textbf{37.8\%p 절감}
+  \end{itemize}
+\item \textbf{Switch 전력}: 55\% $\rightarrow$ 55\% $\times$ 1.23 = \textbf{67.7\%}
+  \begin{itemize}
+  \item Optical Engine (OE)과 External Light Source (ELS) 추가로 23\% 증가
+  \item 실제 증가량: 67.7\% - 55\% = \textbf{12.7\%p 증가}
+  \end{itemize}
+\item \textbf{순 효과}: 7.2\% + 67.7\% = 74.9\%
+  \begin{itemize}
+  \item 전체 networking 전력 절감: 100\% - 74.9\% = \textbf{25.1\% 감소}
+  \item 논문에서 제시된 23\% 감소와 일치
+  \end{itemize}
+\end{itemize}
+
+\textbf{핵심 통찰}: Transceiver의 대폭적인 전력 감소(37.8\%p)가 switch의 증가분(12.7\%p)을 크게 상회하여, 전체적으로 약 25\% 순 절감을 달성합니다. 이는 transceiver를 제거하는 것이 아니라 "더 효율적인 형태로 switch에 통합"하는 전략입니다.
 
 \textbf{핵심}: CPO는 transceiver를 제거하여 큰 전력 절감을 달성하지만, 그 기능을 스위치 내부로 이동시키므로 스위치 자체의 전력 소비는 증가합니다. 이는 "전력을 없애는" 것이 아니라 "더 효율적인 방식으로 재배치"하는 것입니다.
 \end{tcolorbox}
@@ -266,25 +316,80 @@ CPO로의 완전한 전환은 DSP optics 대비 훨씬 더 큰 절감을 제공�
 NVIDIA의 CPO scale-out switch 사용은 암묵적으로 high radix network가 기본적으로 사용됨을 의미하지만, 이는 최종 사용자에게 \textbf{추상화}되는데, 
 shuffle이 high radix non-CPO switch를 사용할 때 patch panel이나 octopus cable을 통해 switch box 외부에서 발생하는 것과 달리 switch box 내부에서 발생하기 때문이다. 
 
-\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: High Radix Network와 Internal Shuffle}]
-\textbf{Radix}: 스위치가 제공하는 포트의 수. High radix는 많은 수의 포트를 의미합니다.
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: High Radix Network와 Internal Shuffle}]
 
-\textbf{Traditional High Radix 구현}:
+\textbf{1. 핵심 개념 정의}
+
+\textbf{Radix}: Switch가 제공하는 port 수. High radix는 많은 수의 port를 의미합니다 (예: 128포트 이상).
+
+\textbf{Shuffle}: 여러 switch의 port를 상호 연결하여 하나의 논리적 대형 switch처럼 작동하도록 만드는 재배치 작업.
+
+\vspace{0.3cm}
+
+\textbf{2. 구체적 예시: 512포트 달성하기}
+
+\textbf{Traditional 방식 (Non-CPO High Radix):}
 \begin{itemize}
-\item 여러 스위치를 patch panel이나 octopus cable로 외부 연결
-\item 복잡한 케이블 관리, 설치 및 유지보수 어려움
-\item 물리적 공간과 전력 소비 증가
+\item \textbf{하드웨어 구성}: 4개의 128포트 switch를 별도로 설치
+\item \textbf{External shuffle 필요}:
+  \begin{itemize}
+  \item Switch A의 port 1-32 → Patch panel → Switch B의 특정 port들로 연결
+  \item Switch B의 port 1-32 → Octopus cable → Switch C의 특정 port들로 연결
+  \item Switch C와 D도 유사하게 복잡하게 교차 연결
+  \item 수백 개의 cable이 switch box \textbf{외부}에서 얽힘
+  \end{itemize}
+\item \textbf{문제점}:
+  \begin{itemize}
+  \item \textbf{물리적 복잡도}: 수백 개의 cable을 수동으로 연결하고 관리
+  \item \textbf{설치 시간}: 며칠이 소요되는 cable routing
+  \item \textbf{디버깅 악몽}: Cable 하나가 잘못 연결되면 전체 network 문제 발생
+  \item \textbf{공간 낭비}: Patch panel, cable tray, shuffle box가 차지하는 rack 공간
+  \item \textbf{전력 낭비}: 각 pluggable transceiver와 긴 cable path에서 신호 손실
+  \item \textbf{확장성 한계}: Port 추가 시 전체 cabling을 재구성해야 함
+  \end{itemize}
+\item \textbf{사용자 관점}: "내가 4개의 switch를 복잡하게 연결하고 있다"는 것을 \textbf{항상 인식}해야 함
 \end{itemize}
 
-\textbf{CPO의 Internal Shuffle}:
+\vspace{2cm}
+
+\textbf{CPO 방식 (Internal Shuffle):}
 \begin{itemize}
-\item 스위치 박스 내부에서 광학적으로 shuffle 수행
-\item 외부 케이블 복잡도를 사용자로부터 추상화
-\item Quantum 3450: 800G 144 포트, Spectrum 6800: 800G 512 포트
-\item 단순한 배포와 관리로 운영 효율성 향상
+\item \textbf{하드웨어 구성}: 단일 switch box (예: Spectrum 6800)
+\item \textbf{Internal shuffle 메커니즘}:
+  \begin{itemize}
+  \item Switch ASIC 내부에 여러 개의 작은 switching unit 통합
+  \item 이들을 \textbf{광학적으로 switch box 내부}에서 상호 연결
+  \item Optical engine과 optical interconnect가 shuffle 기능 수행
+  \item 모든 복잡한 연결이 package 내부에서 완료
+  \end{itemize}
+\item \textbf{결과}: 512포트를 제공하는 "단일 switch"처럼 보임
+\item \textbf{이점}:
+  \begin{itemize}
+  \item \textbf{Zero external cable}: External shuffle cable 완전 제거
+  \item \textbf{Plug-and-play}: Switch box만 rack에 장착하면 즉시 사용 가능
+  \item \textbf{추상화 완성}: 사용자는 "512포트 단일 switch"로만 인식
+  \item \textbf{공간 절약}: Patch panel과 cable tray 불필요
+  \item \textbf{전력 효율}: 짧은 optical path로 신호 손실 최소화
+  \item \textbf{안정성}: Factory에서 검증된 내부 연결로 연결 오류 제로
+  \end{itemize}
+\item \textbf{사용자 관점}: "그냥 512포트 switch 하나"로 \textbf{완전히 추상화}됨
 \end{itemize}
 
-이는 CPO의 핵심 가치 제안 중 하나로, 동일한 connectivity를 훨씬 간단하게 구현할 수 있습니다.
+\vspace{0.3cm}
+
+\textbf{3. 실제 제품 예시}
+\begin{itemize}
+\item \textbf{NVIDIA Quantum 3450 (CPO)}: 800G × 144 port를 단일 switch box로 제공
+\item \textbf{NVIDIA Spectrum 6800 (CPO)}: 800G × 512 port를 단일 switch box로 제공
+\item 비교: Traditional 방식으로 512포트를 달성하려면 최소 4-8개의 switch + 복잡한 external cabling 필요
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{4. CPO가 Internal Shuffle을 가능하게 하는 이유}
+
+Traditional pluggable transceiver는 물리적으로 switch 전면 panel에 위치해야 하므로, 여러 switch를 통합하려면 반드시 external cable이 필요합니다. 반면 CPO는 optical engine을 switch ASIC package 내부에 통합하므로, package 내부의 optical waveguide나 optical fiber를 통해 switch unit 간 연결이 가능합니다. 이것이 "internal shuffle"의 핵심 기술적 기반입니다.
+
 \end{tcolorbox}
 
 대신, 이러한 NVIDIA CPO switch는 매우 높은 port 수를 갖는 것으로 나타낸다.
@@ -358,6 +463,105 @@ Transceiver를 CPO 솔루션과 비교할 때 비용 세부사항을 간략히 �
 
 이를 관점에서 보기 위해, 전통적인 optical transceiver module을 대신 사용한다면 총 비용이 얼마나 될지 고려해보자. 
 non-CPO X800-Q3400은 72개의 OSFP cage를 갖추고 있으며, 800G에서 144 port를 제공하기 위해 1.6T twin-port transceiver가 사용된다. 
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Twin-Port Transceiver와 OSFP Cage}]
+\setlength{\parskip}{2pt}
+\setlength{\itemsep}{0pt}
+
+\textbf{1. OSFP (Octal Small Form Factor Pluggable) Cage}
+
+\textbf{정의}: Switch 전면 패널에 있는 물리적 slot으로, pluggable optical transceiver를 삽입하는 socket입니다.
+
+\textbf{특징}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{물리적 크기}: QSFP보다 큰 form factor, 고전력/고대역폭 transceiver 지원
+\item \textbf{전력 처리}: 최대 15-20W transceiver 지원 가능
+\item \textbf{Hot-swappable}: 시스템 가동 중에도 transceiver 교체 가능
+\item \textbf{1 cage = 1 transceiver}: 물리적으로 하나의 cage는 하나의 transceiver를 수용
+\end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{2. Twin-Port Transceiver의 개념}
+
+\textbf{정의}: 하나의 물리적 transceiver 모듈 내부에 \textbf{2개의 독립적인 광 채널}을 통합한 transceiver입니다.
+
+\textbf{구체적 예시: 1.6T Twin-Port = 2 × 800G}
+
+\textit{Traditional Single-Port 방식:}
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 1개의 800G transceiver = 1개의 OSFP cage 점유 = 1개의 800G port 제공
+\item 144개의 800G port를 만들려면 → 144개의 OSFP cage 필요
+\item 문제: Switch 전면 패널에 144개의 cage를 물리적으로 배치하기 어려움
+\end{itemize}
+
+\textit{Twin-Port 방식:}
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 1개의 1.6T twin-port transceiver = 1개의 OSFP cage 점유 = \textbf{2개의 800G port 제공}
+\item 144개의 800G port를 만들려면 → 72개의 OSFP cage만 필요 (144 ÷ 2 = 72)
+\item 이점: 동일한 bandwidth를 절반의 물리적 공간에 구현
+\end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{3. X800-Q3400의 Port 구성 계산}
+
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{물리적 구성}: 72개의 OSFP cage
+\item \textbf{사용 transceiver}: 72개의 1.6T (2 × 800G) twin-port transceiver
+\item \textbf{논리적 결과}: 72 × 2 = \textbf{144개의 800G port}
+\item \textbf{총 bandwidth}: 144 × 800G = 115.2 Tbps
+\end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{4. Twin-Port의 내부 구조}
+
+하나의 1.6T twin-port transceiver 내부:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{2개의 독립적인 laser}: 각각 800G 신호 생성
+\item \textbf{2개의 독립적인 modulator}: 각각 데이터를 광 신호로 변환
+\item \textbf{2개의 fiber output}: 물리적으로 2개의 광섬유 출력
+\item \textbf{공유 DSP chip}: 하나의 DSP가 두 채널 모두 처리 (비용 절감)
+\item \textbf{공유 cooling}: 단일 heat sink로 두 채널의 열 관리
+\end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{5. 비용 계산 예시 (X800-Q3400)}
+
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 1개의 1.6T DR8 twin-port transceiver 가격: \textasciitilde\$1,000
+\item 필요한 transceiver 수: 72개 (cage 수와 동일)
+\item \textbf{총 transceiver 비용}: 72 × \$1,000 = \textbf{\$72,000}
+\item 제공되는 논리적 port: 144개의 800G port
+\item Port당 비용: \$72,000 ÷ 144 = \textasciitilde\$500/port
+\end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{6. Twin-Port vs CPO 비교}
+
+\textit{Traditional Twin-Port:}
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 72개의 1.6T transceiver = \$72,000
+\item 각 transceiver는 독립적으로 교체 가능
+\item Vendor 선택의 자유, 가격 협상 가능
+\end{itemize}
+
+\textit{CPO:}
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 72개의 1.6T optical engine + ELS = \textasciitilde\$36,000 (원가)
+\item 하지만 switch vendor margin (60\%) 적용 시 = \$80-90,000
+\item Switch에 통합되어 교체 불가, vendor lock-in
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{핵심 통찰}: Twin-port transceiver는 물리적 cage 수를 절반으로 줄여 \textbf{높은 port 밀도}를 달성하는 중간 단계 기술입니다. CPO는 이를 한 단계 더 발전시켜 transceiver 자체를 제거하고 switch 내부에 통합하지만, vendor margin과 lock-in 이슈가 발생합니다.
+
+\end{tcolorbox}
+
 일반적인 1.6T DR8 transceiver의 비용을 \$1,000로 가정하면, 이 switch를 채우기 위한 총 transceiver 비용은 \$72,000가 되며, 
 이는 CPO switch에 동일한 양의 bandwidth를 제공하는 데 필요한 optical engine 및 ELS의 추정 비용 \$35-40k의 두 배이다. 
 
@@ -477,13 +681,28 @@ Copper는 이러한 low-latency, high-throughput connection에서 탁월하다.
 \textbf{World Size}: 단일 scale-up domain 내에서 직접 연결될 수 있는 GPU의 총 개수를 의미합니다. 
 
 \textbf{중요성}:
-\begin{itemize}
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
 \item 더 큰 world size → 더 정교한 collective communication 가능
 \item 추론 기반 모델 스케일링과 test-time compute에서 핵심적
 \item GB200이 8 GPU → 72 GPU로 확장하여 획기적인 성능 향상 달성
 \item Copper 한계: 2m 도달거리로 인해 단일 rack 내로 제한 (144 GPU까지)
 \item CPO로 여러 rack에 걸친 확장 가능 → world size를 수천 GPU로 증가
 \end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{Copper Cable의 2m 도달거리 제한 이유}:
+
+고속 electrical signal (112 Gbps SerDes)이 copper cable을 통과할 때:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Signal attenuation (신호 감쇠)}: Copper의 저항으로 인해 거리에 따라 신호 세기가 지수적으로 감소. 고주파수 신호일수록 감쇠가 급격히 증가하며, 112 Gbps에서는 2m 이상에서 신호가 noise level 이하로 떨어짐
+\item \textbf{Skin effect}: 고주파수에서 전류가 도체 표면에만 흐르면서 유효 단면적 감소 → 저항 증가 → 더 큰 신호 손실
+\item \textbf{Dispersion (분산)}: 서로 다른 주파수 성분이 다른 속도로 전파되어 신호 파형이 왜곡되고 bit error rate 급증
+\item \textbf{Crosstalk (누화)}: 인접한 copper wire 간 전자기 간섭으로 신호 무결성 저하. 밀집된 cable bundle에서 특히 심각
+\item \textbf{Impedance mismatch}: Cable, connector, PCB 간 impedance 불일치로 signal reflection 발생 → 신호 품질 저하
+\end{itemize}
+
+\textbf{대조}: Optical fiber는 빛으로 신호를 전송하므로 전자기 간섭, 저항, skin effect 등의 문제가 없어 수 km까지도 신호 무결성을 유지할 수 있습니다. 이것이 long-reach 연결에 optics가 필수적인 물리적 이유입니다.
 
 World size 증가는 inference workload에서 더 많은 compute, memory capacity, memory bandwidth를 제공하여 모델 성능을 극적으로 향상시킵니다.
 \end{tcolorbox}
@@ -543,34 +762,6 @@ Optics는 copper보다 훨씬 더 많은 bandwidth scaling 경로를 제공하�
 이 모든 것은 이 문서의 후반부에서 자세히 논의될 것이다.
 
 \subsection{When will CPO be ready for Primetime?}
-
-\begin{tcolorbox}[colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: CPO 배포 전략 - Scale-out이 먼저인 이유}]
-\textbf{왜 Scale-up이 아닌 Scale-out CPO를 먼저 출시하는가?}
-
-\textbf{Supply Chain 준비}:
-\begin{itemize}
-\item Scale-up (Rubin Ultra, 2027): 수천만 개의 CPO endpoint 필요
-\item Scale-out switch: 수천 개 단위로 시작 가능
-\item Supply chain을 단계적으로 확장하기 위한 "pipe cleaner"
-\end{itemize}
-
-\textbf{Real-world Validation}:
-\begin{itemize}
-\item Lab 테스트 (Meta: 15개 switch, 325일) vs Production (수천 개 switch)
-\item Temperature 변동, 먼지, 예상치 못한 환경적 요인
-\item Serviceability와 blast radius에 대한 실제 데이터 수집
-\item 고객의 신뢰 구축 및 운영 노하우 축적
-\end{itemize}
-
-\textbf{Timeline}:
-\begin{itemize}
-\item Scale-out CPO: 2025-2026 (제한적 채택)
-\item Scale-up CPO: 2027-2028+ (Rubin Ultra 이후, 아마도 Feynman 세대가 주력)
-\item 실제 대규모 배포: 2028년 이후 예상
-\end{itemize}
-
-\textbf{결론}: Scale-out CPO는 진짜 목표인 scale-up CPO를 위한 연습 무대입니다.
-\end{tcolorbox}
 
 그렇다면, CPO가 솔루션이라면 왜 NVIDIA는 Rubin Ultra에 대해 이것을 추구하지 않고 먼저 scale-out switch에 대해서만 추구하는가? 
 이것은 supply chain 미성숙, manufacturing 과제 및 배포에 대한 고객 주저로 돌아간다. 
@@ -646,7 +837,135 @@ Datacenter의 먼지와 같은 평범하게 들리는 문제조차도 fiber 끝�
 
 더욱이 scale-out CPO와 관련하여, Rubin Ultra는 2027년 출시를 목표로 하고 있지만 (우리는 그것이 결국 2027년 후반으로 예상함) supply chain은 GPU 수요를 지원하기 위해 수천만 개의 이러한 CPO endpoint를 출하할 준비가 되지 않을 것이다. 
 이 timeline조차 NVIDIA에게는 너무 야심적이다. 이것이 Feynman 세대가 NVIDIA ecosystem에 CPO injection의 초점이 되는 것처럼 보이는 이유이다.
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: CPO 배포 전략 - Scale-out이 먼저인 이유}]
+\setlength{\parskip}{2pt}
+
+\textbf{핵심 질문}: CPO가 그렇게 좋다면, 왜 NVIDIA는 Rubin Ultra GPU (scale-up)에 먼저 적용하지 않고 datacenter switch (scale-out)부터 시작하는가?
+
+\vspace{0.15cm}
+
+\textbf{1. 물량의 차이 (Scale 문제)}
+
+\textit{Scale-out Switch (먼저 시작)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{필요 수량}: 대형 datacenter 하나당 수천 개의 switch
+\item \textbf{CPO endpoint 수}: 수천 \textasciitilde{} 수만 개 수준
+\item \textbf{공급망 부담}: 상대적으로 관리 가능
+\item \textbf{실패 시 영향}: 제한적 - 일부 고객의 일부 switch만 영향
+\end{itemize}
+
+\textit{Scale-up GPU (진짜 목표, 나중)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{필요 수량}: 전 세계 모든 AI datacenter의 모든 GPU
+\item \textbf{CPO endpoint 수}: \textbf{수천만 \textasciitilde{} 수억 개} 수준 (Rubin Ultra 기준)
+\item \textbf{공급망 부담}: 엄청난 manufacturing capacity 필요
+\item \textbf{실패 시 영향}: 치명적 - 전체 GPU 출하 지연 또는 중단
+\end{itemize}
+
+\textbf{구체적 예시}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 200K GPU cluster: \textasciitilde{}3,000개의 switch 필요 (scale-out)
+\item 동일 cluster: 200,000개의 GPU 각각 CPO 필요 (scale-up)
+\item \textbf{비율}: GPU가 switch보다 60배 이상 많음!
+\end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{2. "Pipe Cleaner" 전략 (공급망 준비)}
+
+\textit{Pipe cleaner란?} 파이프의 막힌 부분을 먼저 청소하는 도구처럼, scale-out CPO가 supply chain의 문제점을 먼저 발견하고 해결하는 역할을 합니다.
+
+\textbf{Supply chain 단계적 확장}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{2025-2026}: 수천 개 switch로 시작 → 공급업체들이 소량 생산 경험 축적
+\item \textbf{2026-2027}: 수만 개 수준으로 확대 → Manufacturing process 최적화
+\item \textbf{2027-2028}: 수천만 개 GPU용으로 대규모 확장 → 완전한 mass production
+\end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{3. Real-World Validation (현장 검증)}
+
+\textit{Lab vs Production의 차이}:
+
+\textbf{Meta의 Lab 테스트} (2024-2025):
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 15개의 CPO switch
+\item 325일 동안 테스트
+\item 통제된 환경: 일정한 온도, 깨끗한 공기, 안정적인 전력
+\item \textbf{결과}: 매우 좋음 (zero failures)
+\end{itemize}
+
+\textbf{Production 환경} (2026-2028):
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 수천 개의 CPO switch가 여러 datacenter에 분산
+\item 수년간 24/7 가동
+\item \textbf{예상치 못한 도전}:
+  \begin{itemize}[itemsep=0pt]
+  \item 온도 변동 (Meta 논문: 1-2\% 변동이 전력 소비에 영향)
+  \item 먼지와 오염 물질 (fiber 끝 청소 필요)
+  \item 습도, 진동, 전력 불안정성
+  \item 다양한 운영 팀의 실수와 예상 외 사용 패턴
+  \end{itemize}
+\item \textbf{핵심 데이터 수집}:
+  \begin{itemize}[itemsep=0pt]
+  \item Failure rate와 failure mode
+  \item Blast radius (한 switch 고장 시 영향 범위: 64 ports)
+  \item Serviceability (수리 가능성과 소요 시간)
+  \item 실제 MTBF (Mean Time Before Failure)
+  \end{itemize}
+\end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{4. Timeline과 현실}
+
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{시기} & \textbf{Scale-out (Switch)} & \textbf{Scale-up (GPU)} \\
+\hline
+2025-2026 & 제한적 상용화 시작 & 아직 없음 \\
+ & (수백 \textasciitilde{} 수천 개) & \\
+\hline
+2027 & 점진적 확대 & Rubin Ultra 출시 예정 \\
+ & (수만 개) & (하지만 CPO 없이) \\
+\hline
+2028+ & 대규모 배포 & Feynman 세대에서 \\
+ & & CPO 본격 적용 예상 \\
+\hline
+\end{tabular}
+
+\vspace{0.1cm}
+
+\textbf{왜 Rubin Ultra (2027)도 CPO가 없는가?}
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 2027년까지 supply chain이 수천만 개 CPO를 생산할 준비 안 됨
+\item Scale-out의 field data가 충분히 축적되지 않음
+\item 너무 야심적인 timeline → 리스크가 너무 큼
+\item \textbf{보수적 접근}: Feynman (2028-2029)까지 기다려서 확실하게 적용
+\end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{5. 경제적/전략적 이유}
+
+\textbf{TCO (Total Cost of Ownership) 이점}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Scale-out CPO: 23\% networking 전력 절감 (좋지만 제한적)
+\item \textbf{Scale-up CPO}: 훨씬 더 큰 이점 (copper 제거, world size 증가)
+\item 진짜 큰 돈은 GPU에서 나옴 → GPU CPO가 진짜 목표
+\end{itemize}
+
+\vspace{0.15cm}
+
+\textbf{최종 목표}는 scale-up CPO입니다. 하지만 그곳에 도달하려면 scale-out으로 먼저 길을 닦아야 합니다. 이는 기술적 필연성이자 비즈니스적 현명함입니다.
+
+\end{tcolorbox}
+
 이제 CPO가 무엇인지, 기술적 고려사항, 과제 및 오늘날 ecosystem의 상태에 대해 심도 있게 이야기해보자.
+
+\newpage{}
 
 \section{Part 2: CPO Introduction and Implementation}
 
@@ -681,6 +1000,103 @@ Optical engine은 처음에는 substrate에 있을 것이고, 미래에는 OE가
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/685d1ff0-0003-4a85-a518-b386d4011a3b_1349x442.png}
 \caption{Source: SemiAnalysis}
 \end{figure}
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: CPO의 본질 - Signal Path 혁명}]
+\setlength{\parskip}{2pt}
+
+\textbf{1. Traditional Pluggable Optics의 Signal Journey}
+
+\textbf{Electrical signal의 긴 여정}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{출발}: ASIC chip의 SerDes
+\item \textbf{경로 1}: Package substrate (1-2 cm)
+\item \textbf{경로 2}: PCB trace 또는 flyover cable (15-30 cm)
+\item \textbf{경로 3}: Connector 및 transceiver PCB (1-2 cm)
+\item \textbf{도착}: Transceiver 내부의 optical engine
+\item \textbf{총 거리}: 약 \textbf{20-35 cm}
+\end{itemize}
+
+\textbf{이 여정의 대가}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Signal degradation}: 고주파수 성분이 exponentially 감쇠
+\item \textbf{LR SerDes 필요}: 50-70 mW/lane의 높은 전력
+\item \textbf{DSP chip 필요}: Signal reconditioning에 5-14W
+\item \textbf{낮은 bandwidth density}: 많은 회로가 signal recovery에 사용됨
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{2. CPO의 혁명적 변화}
+
+\textbf{Electrical signal의 짧은 여정}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{출발}: ASIC chip의 SerDes 또는 wide I/O
+\item \textbf{경로}: Package substrate 또는 interposer (\textbf{2-5 mm})
+\item \textbf{도착}: 동일 package 내의 optical engine
+\item \textbf{총 거리}: \textbf{2-5 mm}
+\end{itemize}
+
+\textbf{거리 단축의 마법}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Signal degradation 최소화}: mm 거리에서는 거의 감쇠 없음
+\item \textbf{SR SerDes 또는 wide I/O}: 20-30 mW/lane (50\% 절감)
+\item \textbf{DSP 제거}
+\item \textbf{높은 bandwidth density}: Signal recovery 회로 불필요
+\end{itemize}
+
+\vspace{2cm}
+
+\textbf{3. 구체적 수치 비교}
+
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{항목} & \textbf{Traditional} & \textbf{CPO} & \textbf{절감률} \\
+\hline
+Signal path 거리 & 20-35 cm & 2-5 mm & 100배↓ \\
+\hline
+SerDes 전력/lane & 50-70 mW & 20-30 mW & 50-70\% \\
+\hline
+DSP 전력 & 5-14W & 0W & 100\% \\
+\hline
+총 전력 (800G) & 16-17W & 4-5W & 73\% \\
+\hline
+Bandwidth density & 0.4 Tbps/mm & 1.8-10 Tbps/mm & 5-25배↑ \\
+\hline
+\end{tabular}
+
+\vspace{0.1cm}
+
+\textbf{4. 왜 거리가 이렇게 중요한가?}
+
+\textbf{물리 법칙}: Insertion loss는 거리와 주파수에 exponentially 비례
+
+\textbf{구체적 예시} (112 Gbps, 56 GHz):
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{5 mm} (CPO): 약 2-3 dB loss → 신호 50-70\% 유지
+\item \textbf{10 cm} (short PCB): 약 20-25 dB loss → 신호 1-3\% 유지
+\item \textbf{30 cm} (long PCB): 약 40-50 dB loss → 신호 0.01\% 유지
+\end{itemize}
+
+\vspace{0.1cm}
+
+5mm에서는 신호가 대부분 유지되므로:
+- Minimal equalization (전력 절감)
+- DSP 불필요 (전력 절감)
+- 낮은 transmit power (전력 절감)
+
+\vspace{0.1cm}
+
+30cm에서는 신호가 거의 완전히 소멸하므로:
+- 강력한 equalization 필요 (전력 소비)
+- DSP로 signal reconstruction 필요 (전력 소비)
+- 높은 transmit power 필요 (전력 소비)
+
+\vspace{0.1cm}
+
+\textbf{핵심 통찰}: CPO의 본질은 "optical engine을 chip에 붙이는 것"이 아니라 "\textbf{electrical signal path를 극단적으로 단축}하는 것"입니다. 
+
+\end{tcolorbox}
+
 오늘날 아래 다이어그램에 설명된 것처럼 front pluggable optics 솔루션이 보편적이다. 이 다이어그램에서 주요 요점은 electrical signal이 transceiver의 optical engine에 도달하기 전에 copper trace 또는 flyover cable을 통해 긴 거리 (15-30cm)를 통과해야 함을 보여주는 것이다. 위에서 논의한 바와 같이, 이는 또한 pluggable module로 구동하기 위한 long-reach (LR) SerDes의 필요성을 필요로 한다.
 
 \begin{figure}[H]
@@ -688,6 +1104,85 @@ Optical engine은 처음에는 substrate에 있을 것이고, 미래에는 OE가
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/a77dcc21-f043-4a19-8177-7100ba4a98b3_1024x370.png}
 \caption{Source: SemiAnalysis}
 \end{figure}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: SerDes, PCB Trace, Flyover Cable}]
+\setlength{\parskip}{2pt}
+
+\textbf{SerDes (Serializer/Deserializer)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{정의}: 병렬 데이터를 직렬로 변환(전송) 또는 직렬을 병렬로 변환(수신)하는 회로
+\item \textbf{필요성}: Chip 내부는 넓은 병렬 bus(예: 256 bits), 외부는 좁은 직렬 lane(예: 1 bit)
+\item \textbf{Serializer}: 256 bits를 받아서 1 bit씩 순차적으로 고속 전송
+\item \textbf{Deserializer}: 1 bit씩 받아서 256 bits로 재구성
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{Long-Reach (LR) SerDes vs Short-Reach (SR) SerDes}:
+
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{특성} & \textbf{LR SerDes} & \textbf{SR SerDes} \\
+\hline
+목표 거리 & 15-30 cm & 2-5 mm \\
+\hline
+전력 (per lane) & 50-70 mW & 20-30 mW \\
+\hline
+회로 복잡도 & 매우 높음 & 중간 \\
+\hline
+Equalization & 강력 (FFE, DFE) & 최소 \\
+\hline
+사용 예 & Pluggable optics & CPO, chiplet \\
+\hline
+\end{tabular}
+
+\vspace{0.1cm}
+
+\textbf{왜 LR SerDes가 더 많은 전력을 쓰는가?}
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Pre-emphasis}: 전송 전 고주파수 성분 증폭 (signal degradation 예상)
+\item \textbf{Equalization}: 수신 후 주파수 왜곡 보정
+\item \textbf{CDR (Clock Data Recovery)}: 저하된 신호에서 clock 추출
+\item \textbf{더 높은 swing voltage}: 긴 거리로 인한 loss 보상
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{PCB (Printed Circuit Board) Trace}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{정의}: PCB 기판 위/내부에 etching된 copper 경로
+\item \textbf{CCL (Copper-Clad Laminate)}: PCB의 기본 재료
+  \begin{itemize}[itemsep=0pt]
+  \item 절연체(laminate)에 copper를 입힌 구조
+  \item 고주파수에서 dielectric loss가 큼
+  \end{itemize}
+\item \textbf{문제}: 112 Gbps 이상에서는 수 cm만 이동해도 신호 품질 심각하게 저하
+\item \textbf{Insertion loss}: 고주파수일수록 exponentially 증가
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{Flyover Cable}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{정의}: PCB trace를 우회하여 \textbf{공중}으로 연결하는 고품질 cable
+\item \textbf{장점}: 
+  \begin{itemize}[itemsep=0pt]
+  \item PCB trace보다 훨씬 낮은 insertion loss
+  \item 더 나은 shielding으로 crosstalk 감소
+  \item 고주파수 신호에 최적화된 재료
+  \end{itemize}
+\item \textbf{단점}:
+  \begin{itemize}[itemsep=0pt]
+  \item 여전히 15-30cm 거리 필요 (LR SerDes 필수)
+  \item 복잡한 설치 (수작업으로 routing)
+  \item 물리적 공간 점유
+  \item 높은 비용
+  \end{itemize}
+\item \textbf{사용처}: High-end server/switch에서 PCB trace 대체
+\end{itemize}
+
+\end{tcolorbox}
+
 추가로, CPO와 전통적인 front-pluggable optics 사이에 있는 중간 구현이 있는데, \textbf{Near-Packaged Optics (NPO)} 및 \textbf{On-Board Optics (OBO)}와 같은 것들이다.
 최근 몇 년 동안 NPO는 CPO로 가는 중간 단계로 등장했다. NPO는 여러 정의를 가지고 있다. 
 NPO는 OE가 ASIC의 substrate에 직접 위치하지 않고 다른 substrate에 co-package되는 경우이다. 
@@ -708,6 +1203,96 @@ OBO는 optical engine을 chassis 내부의 system PCB에 통합하여 host ASIC�
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/faa2a72c-e270-4e1f-a13f-a0fe827c9b66_1024x276.png}
 \caption{Source: SemiAnalysis}
 \end{figure}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: NPO, OBO - CPO로 가는 중간 단계들}]
+\setlength{\parskip}{2pt}
+
+\textbf{Optical Integration의 진화 스펙트럼}
+
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{특성} & \textbf{Pluggable} & \textbf{OBO} & \textbf{NPO} & \textbf{CPO} \\
+\hline
+OE 위치 & Cage & PCB & Near pkg & In pkg \\
+\hline
+Signal 거리 & 15-30cm & 5-10cm & 2-5cm & 2-5mm \\
+\hline
+Serviceability & 최고 & 중간 & 낮음 & 최저 \\
+\hline
+전력 효율 & 낮음 & 중간 & 중간-높음 & 최고 \\
+\hline
+복잡도 & 낮음 & 중간 & 높음 & 최고 \\
+\hline
+\end{tabular}
+
+\vspace{0.1cm}
+
+\textbf{1. OBO (On-Board Optics)}
+
+\textbf{개념}: Optical engine을 system PCB 위에 직접 배치 (chassis 내부, ASIC package 외부)
+
+\textbf{장점}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Signal path가 pluggable 대비 짧아짐 (30cm → 5-10cm)
+\item 일부 전력 절감 가능
+\item Pluggable보다 높은 bandwidth density
+\end{itemize}
+
+\textbf{단점}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{"Worst of Both Worlds"}: CPO의 복잡도 + Pluggable의 제한
+\item 여전히 LR SerDes 필요 (전력 소비 높음)
+\item PCB에 고정되어 serviceability 어려움
+\item CPO만큼의 bandwidth density나 전력 효율 달성 못함
+\item Thermal management 복잡
+\end{itemize}
+
+\textbf{결론}: 이득은 적고 복잡도는 높아서 업계에서 선호하지 않음
+
+\vspace{0.3cm}
+
+\textbf{2. NPO (Near-Packaged Optics)}
+
+\textbf{개념}: Optical engine을 별도 substrate에 배치하되 ASIC package 매우 가까이 위치
+
+\textbf{주요 특징}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item OE가 ASIC substrate에 직접 붙지 않고 \textbf{별도 substrate}에 위치
+\item \textbf{Socketable}: OE substrate를 분리/교체 가능 (일부 serviceability 유지)
+\item Signal은 여전히 일부 copper channel 통과 (2-5cm)
+\item CPO보다 긴 electrical path이지만 pluggable보다는 짧음
+\end{itemize}
+
+\textbf{장점}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item CPO로 가는 \textbf{중간 단계}로 supply chain 준비 가능
+\item 일부 serviceability 유지 (OE substrate 교체)
+\item Pluggable 대비 상당한 전력 절감
+\item CPO보다 packaging 복잡도 낮음
+\end{itemize}
+
+\textbf{단점}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item CPO만큼의 극적인 전력/공간 절감은 못함
+\item 여전히 일부 copper channel 통과로 SerDes 전력 소비
+\item 표준화 부족
+\end{itemize}
+
+\textbf{시장 포지셔닝}: CPO가 완전히 성숙하기 전까지의 과도기 솔루션
+
+\vspace{0.3cm}
+
+\textbf{3. 왜 CPO가 최종 목표인가?}
+
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{물리적 한계}: Electrical signal은 거리가 짧을수록 exponentially하게 좋아짐
+\item \textbf{경제성}: 중간 단계들은 "일부 복잡도 + 일부 이득"으로 ROI가 불분명
+\item \textbf{표준화}: Pluggable은 표준화됨, CPO도 표준화 진행 중, 하지만 중간 단계들은 표준화 어려움
+\end{itemize}
+
+\textbf{핵심 통찰}: OBO와 NPO는 CPO로 가는 징검다리 역할을 할 수 있지만, 업계는 대부분 "조금 나은 pluggable"보다 "확실히 다른 CPO"를 기다리는 쪽을 선택하고 있습니다. 
+
+\end{tcolorbox}
 
 \subsection{Co-packaged Copper}
 CPO의 또 다른 대안은 \textbf{Co-Packaged Copper (CPC)}이다. 
@@ -735,13 +1320,246 @@ Substrate는 수천 개의 이러한 cable에 전력과 신호를 routing해야 
 손실이 많은 CCL trace를 우회함으로써, CPC는 448G line speed를 가능하게 하는 기술이 될 수 있다. 
 CPC는 또한 448G를 가능하게 하기 위해 매우 광범위하게 검토되고 있는데, 이 bandwidth의 signal은 PCB를 통해 실행될 때 받아들일 수 없는 attenuation을 경험하기 때문이다.
 
+
+
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Package Substrate, Twinax Cable, Cross-talk}]
+\setlength{\parskip}{2pt}
+
+\textbf{1. Package Substrate}
+
+\textbf{정의}: ASIC chip과 PCB 사이의 중간층으로, chip의 미세한 bump를 PCB의 큰 solder ball로 연결하는 다층 구조
+
+\textbf{역할}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Fan-out}: Chip의 좁은 bump pitch (예: 100 μm) → PCB의 넓은 ball pitch (예: 1 mm)로 확장
+\item \textbf{Signal redistribution}: Chip의 I/O를 적절한 위치로 재배치
+\item \textbf{Power delivery}: 깨끗한 전원을 chip에 공급 (decoupling capacitor 내장)
+\item \textbf{Thermal management}: 열을 PCB로 전달
+\end{itemize}
+
+\textbf{재료와 특성}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Organic substrate}: FR-4 기반, 저렴하지만 electrical 성능 제한적
+\item \textbf{HDI substrate}: High-Density Interconnect, 미세 pitch 지원
+\item \textbf{Advanced substrate}: ABF (Ajinomoto Build-up Film), 고주파수 특성 우수
+\item 일반적으로 4-12 metal layer
+\end{itemize}
+
+\textbf{CPC에서의 역할}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Package substrate 표면에 \textbf{cable connector} 직접 장착
+\item PCB trace를 완전히 우회 → Signal degradation 최소화
+\item 가장 짧은 electrical path (chip → substrate → cable)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{2. Twinax Cable (Twin-Axial Cable)}
+
+\textbf{정의}: 두 개의 copper conductor가 함께 차폐(shielding)된 고성능 cable
+
+\textbf{구조} (안쪽에서 바깥쪽으로):
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{두 개의 conductor}: 신호를 differential pair로 전송
+  \begin{itemize}[itemsep=0pt]
+  \item Signal+ 와 Signal- 가 함께 전송
+  \item Differential signaling으로 noise immunity 향상
+  \end{itemize}
+\item \textbf{절연체 (dielectric)}: 두 conductor 사이와 주변을 절연
+\item \textbf{Shield (차폐)}: Aluminum foil 또는 braided copper
+  \begin{itemize}[itemsep=0pt]
+  \item 외부 electromagnetic interference (EMI) 차단
+  \item Cross-talk 방지
+  \end{itemize}
+\item \textbf{Jacket (외피)}: 기계적 보호
+\end{itemize}
+
+\textbf{Twinax vs Coaxial}:
+
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{특성} & \textbf{Coaxial} & \textbf{Twinax} \\
+\hline
+Conductor 수 & 1개 (중심) & 2개 (parallel) \\
+\hline
+Signaling & Single-ended & Differential \\
+\hline
+Noise immunity & 중간 & 높음 \\
+\hline
+용도 & RF, video & High-speed data \\
+\hline
+\end{tabular}
+
+\textbf{Twinax의 장점}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{낮은 insertion loss}: PCB trace 대비 10배 이상 낮음
+\item \textbf{우수한 signal integrity}: 차폐로 external noise 차단
+\item \textbf{낮은 cross-talk}: 차폐로 인접 cable 간 간섭 최소
+\item \textbf{고주파수 지원}: 448G SerDes 가능 (2m 이내)
+\item \textbf{Flexible}: 손쉬운 routing
+\end{itemize}
+
+\textbf{단점}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item PCB trace 대비 높은 비용
+\item 물리적 공간 점유
+\item 거리 제한 (copper 물리 한계)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{3. Cross-talk (누화)}
+
+\textbf{정의}: 인접한 신호선 간에 발생하는 원치 않는 전자기 간섭 (electromagnetic coupling)
+
+\textbf{발생 원리}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Capacitive coupling}: 인접 conductor 간 기생 capacitance
+  \begin{itemize}[itemsep=0pt]
+  \item 고주파수 신호가 AC coupling으로 누설
+  \item 거리가 가까울수록 심함
+  \end{itemize}
+\item \textbf{Inductive coupling}: 전류가 흐르면 자기장 생성
+  \begin{itemize}[itemsep=0pt]
+  \item 인접 conductor에 유도 전류 발생
+  \item 전류가 클수록 심함
+  \end{itemize}
+\end{itemize}
+
+\textbf{Cross-talk의 영향}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Signal integrity 저하}: 원래 신호에 noise 추가
+\item \textbf{Bit error rate (BER) 증가}: 인접 bit 간섭
+\item \textbf{Timing margin 감소}: Signal eye diagram 닫힘
+\item 고속 신호(224G+)에서 특히 치명적
+\end{itemize}
+
+\textbf{PCB Trace에서 Cross-talk가 심한 이유}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 수백-수천 개의 trace가 좁은 공간에 밀집
+\item Trace 간 거리: 수십-수백 μm (매우 가까움)
+\item 차폐 없음 → Electromagnetic field가 자유롭게 전파
+\item 고주파수 신호 → Coupling 증가
+\end{itemize}
+
+\textbf{Twinax Cable이 Cross-talk를 막는 방법}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Shield (차폐)}: 
+  \begin{itemize}[itemsep=0pt]
+  \item Electromagnetic field를 shield 내부에 가둠
+  \item 외부로 field 방출 차단
+  \item 외부 field 침입 차단
+  \end{itemize}
+\item \textbf{Differential signaling}: 
+  \begin{itemize}[itemsep=0pt]
+  \item Signal+ 와 Signal- 가 동일한 noise를 받음
+  \item Receiver가 차이만 측정 → Noise 상쇄 (common-mode rejection)
+  \end{itemize}
+\item \textbf{Physical separation}: Cable 간 물리적 간격 유지 가능
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: CPC - Copper의 마지막 진화}]
+\setlength{\parskip}{2pt}
+
+\textbf{핵심 질문}: CPO가 미래라면, 왜 CPC(Co-Packaged Copper)도 논의되는가?
+
+\vspace{0.1cm}
+
+\textbf{1. CPC의 전략}
+
+\textbf{Traditional copper의 문제 진단}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item ASIC → PCB trace (손실 많은 CCL) → Connector → Cable
+\item \textbf{주범}: PCB trace의 높은 insertion loss
+\item 112G 이상에서 수 cm만 가도 신호 품질 급격히 저하
+\end{itemize}
+
+\textbf{CPC의 해법}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item ASIC → Package substrate → \textbf{직접 twinax cable 연결}
+\item \textbf{PCB trace 완전 우회!}
+\item Flyover cable과 유사하지만 시작점이 package substrate
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{2. CPC의 장점과 과제}
+
+\textbf{장점}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{448G SerDes 가능}: PCB trace 우회로 448G line speed 달성
+\item \textbf{CPO보다 훨씬 간단}: Optical engine, laser, fiber coupling 모두 불필요
+\item \textbf{Short-reach에 최적}: In-rack scale-up connectivity (1-2m)
+\item \textbf{Lower cost}: CPO 대비 단순한 구조
+\item \textbf{Proven technology}: Copper cable은 성숙한 기술
+\end{itemize}
+
+\textbf{과제}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Substrate 복잡도}: 수천 개의 cable connector를 substrate에 배치
+\item \textbf{Power/Signal routing}: 수천 개 cable에 전력과 신호 routing
+\item \textbf{기계적 스트레스}: 많은 cable이 package에 연결되어 물리적 부담
+\item \textbf{거리 제한}: 여전히 copper 물리 한계 (2m)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{3. CPC vs CPO: 언제 무엇을 쓸 것인가?}
+
+\textbf{CPC가 유리한 경우}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{In-rack scale-up}: 같은 rack 내 GPU 간 연결 (1-2m)
+  \begin{itemize}[itemsep=0pt]
+  \item 예: GB200 NVL72, Kyber rack
+  \item 모든 GPU가 하나의 rack에 밀집
+  \item 2m 이내 거리면 충분
+  \end{itemize}
+\item \textbf{448G adoption}: CPO가 성숙하기 전 448G를 구현하는 practical path
+\item \textbf{Cost-sensitive applications}: CPO의 높은 비용 부담스러운 경우
+\end{itemize}
+
+\textbf{CPO가 필수인 경우}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Multi-rack scale-up}: Rack 간 연결 (2m 이상)
+\item \textbf{Scale-out networking}: Datacenter switch fabric
+\item \textbf{극한의 bandwidth density}: 물리적 공간 제약이 심한 경우
+\item \textbf{최고 전력 효율}: 전력이 critical한 대규모 deployment
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{4. 현실적 미래: Hybrid 접근}
+
+업계는 \textbf{Co-Packaged Copper + Co-Packaged Optics} 병행 사용할 가능성 높음:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{In-rack}: CPC로 copper 사용 (저렴하고 충분)
+\item \textbf{Across-rack}: CPO로 optics 사용 (필수)
+\item NVIDIA도 이 hybrid 전략 추구 중
+\end{itemize}
+
+\textbf{구체적 예시}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Rack 내부 72 GPU 연결: CPC (NVLink over copper)
+\item Rack 간 scale-up: CPO (NVLink over optics)
+\item Datacenter switch fabric: CPO (scale-out networking)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{핵심 통찰}: "할 수 있는 곳에서는 copper를 사용하고, 해야 할 때는 optics를 사용하라." 
+CPC는 이 격언의 현대적 구현입니다. CPO가 모든 것을 대체하는 것이 아니라, copper와 optics가 각자 최적인 영역에서 co-exist하는 미래가 더 현실적입니다. 
+
+\end{tcolorbox}
+
 \subsection{Past obstacles to CPO market readiness: Why only now?}
 기술적 우월성에도 불구하고 CPO는 비용을 증가시키는 여러 과제로 인해 실제 채택이 매우 제한적이었다. 
 여기에는 packaging (OE 자체보다 비용이 더 많이 드는)과 manufacturing의 복잡성, 신뢰성 및 yield 우려, 
 그리고 긴밀하게 통합된 optical 및 electrical component에서 발생하는 thermal management 문제가 포함된다. 
 또 다른 장애물은 산업 전반의 표준화 부족이다. 추가로, 고객들은 serviceability에 대해 우려하고 있으며 이는 전통적인 pluggable optics에서 CPO 솔루션으로의 전환을 방해한다.
 
-또 다른 주요 고객 불안은 CPO를 채택함으로써 비용을 통제할 수 있는 능력을 잠재적으로 포기한다는 것이다. 
+\textbf{또 다른 주요 고객 불안은 CPO를 채택함으로써 비용을 통제할 수 있는 능력을 잠재적으로 포기한다는 것이다.}
 더 적은 수의 switch vendor보다 더 많은 수의 transceiver 회사에 비용 압박을 가하는 것이 훨씬 쉽다.
 한편, CPO가 대체할 기존 기술인 pluggable optics는 계속 개선되고 있으며 여전히 훨씬 적은 최종 사용자 불안으로 거의 모든 application에 충분히 좋은 성능을 제공한다.
 Part 2의 나머지 부분에서는 CPO 채택의 동기에 대해 더 깊이 탐구할 것이다. 
@@ -765,6 +1583,104 @@ DSP는 signal당 bit 수를 증가시키기 위해 binary signal을 4개의 dist
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/350cad4c-11a7-4da3-ba99-5566eac861fc_1353x408.jpg}
 \caption{Source: SemiAnalysis}
 \end{figure}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: DSP Transceiver의 구조와 역할}]
+\setlength{\parskip}{2pt}
+
+\textbf{1. Optical Engine (OE)의 구성요소}
+
+Optical Engine은 전기-광 변환을 담당하는 핵심 component:
+
+\textbf{송신 (TX) 측}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Driver (DRV)}: Electrical signal을 증폭하여 modulator 구동
+\item \textbf{Modulator (MOD)}: Laser 빛을 electrical signal에 따라 변조
+  \begin{itemize}[itemsep=0pt]
+  \item 빛의 세기나 위상을 바꿔서 데이터 encoding
+  \item 예: PAM4는 4개의 다른 세기 level 사용
+  \end{itemize}
+\end{itemize}
+
+\textbf{수신 (RX) 측}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Photodetector (PD)}: 광 신호를 전기 신호로 변환
+  \begin{itemize}[itemsep=0pt]
+  \item 빛을 받으면 전류 생성
+  \item 매우 약한 신호 (micro-ampere 수준)
+  \end{itemize}
+\item \textbf{Transimpedance Amplifier (TIA)}: PD의 약한 전류를 증폭
+  \begin{itemize}[itemsep=0pt]
+  \item 전류 신호를 전압 신호로 변환하면서 증폭
+  \item 신호 대 잡음비 향상
+  \end{itemize}
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{2. Optical DSP Chip의 역할}
+
+\textbf{왜 DSP가 필요한가?} 긴 copper path(15-30cm)를 거치면서 electrical signal이 심하게 degradation되기 때문
+
+\textbf{주요 기능}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Signal Reconditioning}: 저하된 신호를 원래 모양으로 복원
+\item \textbf{Retiming}: Clock 신호를 재생성하여 timing jitter 제거
+\item \textbf{Error Correction (FEC)}: Forward Error Correction으로 bit error 수정
+\item \textbf{Clock/Data Recovery (CDR)}: Signal에서 clock 추출하고 데이터 복구
+\item \textbf{Equalization}: 주파수 dependent loss 보상
+  \begin{itemize}[itemsep=0pt]
+  \item 고주파수 성분이 저주파수보다 더 감쇠됨
+  \item 고주파수를 선택적으로 증폭하여 균형 맞춤
+  \end{itemize}
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{3. PAM4 Modulation}
+
+\textbf{기본 개념}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{PAM (Pulse Amplitude Modulation)}: 신호의 진폭(세기)으로 데이터 encoding
+\item \textbf{PAM2 (NRZ)}: 2개 level (0, 1) → 1 bit per symbol
+\item \textbf{PAM4}: 4개 level (00, 01, 10, 11) → \textbf{2 bits per symbol}
+\end{itemize}
+
+\textbf{PAM4의 장점}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 동일한 baud rate에서 2배 bandwidth
+\item 예: 56 Gbaud × 2 bits = 112 Gbps
+\item Symbol rate 낮춰서 frequency 관련 loss 완화
+\end{itemize}
+
+\textbf{PAM4의 단점}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Level 간 간격이 좁아져 noise margin 감소
+\item 더 복잡한 DSP 필요 (level 구분)
+\item 더 높은 전력 소비
+\end{itemize}
+
+\textbf{미래 (448G 시대)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{PAM6}: 6 level → 약 2.58 bits per symbol
+\item \textbf{PAM8}: 8 level → 3 bits per symbol
+\item 하지만 noise margin이 더욱 줄어들어 구현 매우 어려움
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{4. DSP의 통합 형태}
+
+DSP chip은 종종 다른 component와 통합:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{DSP + Driver}: 송신 측 통합
+\item \textbf{DSP + TIA}: 수신 측 통합
+\item \textbf{DSP + Driver + TIA}: 완전 통합 (single package)
+\end{itemize}
+
+\textbf{핵심 통찰}: DSP transceiver는 "signal degradation을 극복하기 위한 정교한 복구 시스템"입니다. 하지만 이 복구 시스템 자체가 엄청난 전력을 소비합니다. CPO의 본질은 "signal degradation 자체를 예방"하여 이 복구 시스템을 아예 제거하는 것입니다.
+
+\end{tcolorbox}
+
 DSP chip은 transceiver 내에서 가장 전력을 많이 소비하고 비싼 component 중 하나이다. 
 800G SR8 Transceiver의 경우 -- DSP는 module의 총 전력 소비의 거의 \textasciitilde{}50\%를 차지하며, 이것이 DSP를 제거하는 데 그토록 많은 초점이 맞춰진 이유이다.
 
@@ -773,7 +1689,7 @@ DSP chip은 transceiver 내에서 가장 전력을 많이 소비하고 비싼 co
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/49a322c1-c7b4-4e7e-b880-d6a20f501fcc_1024x650.png}
 \caption{Source: \href{https://ieeexplore.ieee.org/document/10526441/}{Dr. Radha Nagarajan et al.: Recent Advances in Low-Power Digital Signal Processing Technologies for Data Center Applications}}
 \end{figure}
-2-layer InfiniBand network로 구축된 18k GB300 Cluster는 18,432개의 800G DR4 transceiver와 27,648개의 1.6T DR8 transceiver를 필요로 할 것이다. 
+2-layer InfiniBand network로 구축된 18K GB300 Cluster는 18,432개의 800G DR4 transceiver와 27,648개의 1.6T DR8 transceiver를 필요로 할 것이다. 
 DSP 사용으로 인한 추가 비용과 전력 요구사항은 total cost of ownership에 상당히 추가될 수 있다. 
 800G DSP에 6-7W, 1.6T DSP에 12-14W를 예산으로 잡으면, 이 전체 cluster의 back-end network만을 위해 480kW의 DSP 전력이 추가되며,
 이는 server rack당 약 1.8kW이다. 프리미엄 브랜드 공급업체에서 조달할 때, transceiver는 cluster의 total cost of ownership의 거의 10\%를 차지할 수 있다. 
@@ -784,6 +1700,184 @@ DSP 사용으로 인한 추가 비용과 전력 요구사항은 total cost of ow
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/0b4adda8-3877-4a99-a96a-90088595122a_1289x372.png}
 \caption{Source: SemiAnalysis AI Networking Model}
 \end{figure}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: DR4, DR8 - Optical Transceiver 규격}]
+\setlength{\parskip}{2pt}
+
+\textbf{1. DR의 의미}
+
+\textbf{DR = Dense Wavelength Division Multiplexing (DWDM) Reach}
+
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{D (Dense)}: 좁은 파장 간격으로 여러 wavelength 사용
+\item \textbf{R (Reach)}: 전송 거리 category
+  \begin{itemize}[itemsep=0pt]
+  \item \textbf{SR (Short Reach)}: 100m 이하, multimode fiber
+  \item \textbf{DR (DWDM Reach)}: 500m-2km, single-mode fiber, DWDM 지원
+  \item \textbf{FR (Far Reach)}: 2km, single-mode fiber
+  \item \textbf{LR (Long Reach)}: 10km, single-mode fiber
+  \end{itemize}
+\item DR은 datacenter 내부 연결에 최적화된 규격
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{2. 숫자의 의미 (Lane 수)}
+
+\textbf{DR 뒤의 숫자 = Optical lane의 개수}
+
+\textbf{DR4}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{4개의 optical lane} (4개의 laser + 4개의 photodetector)
+\item 각 lane이 독립적으로 데이터 전송
+\item \textbf{800G DR4}: 4 lanes × 200G/lane = 800 Gbps
+\item \textbf{400G DR4}: 4 lanes × 100G/lane = 400 Gbps
+\end{itemize}
+
+\textbf{DR8}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{8개의 optical lane}
+\item \textbf{1.6T DR8}: 8 lanes × 200G/lane = 1.6 Tbps
+\item \textbf{800G DR8}: 8 lanes × 100G/lane = 800 Gbps
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{3. Lane 수와 Form Factor}
+
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{규격} & \textbf{Lane 수} & \textbf{Fiber 수} & \textbf{Form Factor} \\
+\hline
+400G DR4 & 4 TX + 4 RX & 8 (4 pair) & QSFP-DD \\
+\hline
+800G DR4 & 4 TX + 4 RX & 8 (4 pair) & QSFP-DD \\
+\hline
+800G DR8 & 8 TX + 8 RX & 16 (8 pair) & OSFP \\
+\hline
+1.6T DR8 & 8 TX + 8 RX & 16 (8 pair) & OSFP \\
+\hline
+\end{tabular}
+
+\vspace{0.1cm}
+
+\textbf{왜 더 많은 lane을 사용하는가?}
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Lane당 속도 제한}: 단일 lane의 속도를 무한정 올리기 어려움
+  \begin{itemize}[itemsep=0pt]
+  \item 현재: 100G-200G per lane이 주류
+  \item 미래: 400G per lane 목표 (매우 어려움)
+  \end{itemize}
+\item \textbf{Parallel transmission}: 여러 lane으로 병렬 전송하여 총 bandwidth 증가
+\item \textbf{Redundancy}: 일부 lane 고장 시에도 동작 가능 (일부 제품)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{4. 구체적 예시}
+
+\textbf{800G DR4 Transceiver}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 4개의 1310nm laser (CWDM4 wavelength)
+\item 각 laser가 200 Gbps 전송 (PAM4 modulation)
+\item 4개의 fiber로 TX, 4개의 fiber로 RX
+\item Single-mode fiber, 최대 500m
+\item 전력: 약 16-17W
+\end{itemize}
+
+\textbf{1.6T DR8 Transceiver}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 8개의 laser (CWDM8 wavelength)
+\item 각 laser가 200 Gbps 전송
+\item 8개의 fiber로 TX, 8개의 fiber로 RX
+\item OSFP form factor (QSFP-DD보다 큼)
+\item 전력: 약 30-35W (DR4의 약 2배)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{5. 왜 18K GPU Cluster에서 DR4와 DR8을 혼용하는가?}
+
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{GPU-to-switch}: 800G DR4
+  \begin{itemize}[itemsep=0pt]
+  \item 각 GPU는 800G로 충분
+  \item QSFP-DD form factor로 공간 효율적
+  \item 비용 효율적
+  \end{itemize}
+\item \textbf{Switch-to-switch}: 1.6T DR8
+  \begin{itemize}[itemsep=0pt]
+  \item Switch 간 연결은 많은 traffic 집약 (aggregation)
+  \item Higher bandwidth 필요
+  \item Port 수 절감 (1.6T 1개 = 800G 2개)
+  \end{itemize}
+\end{itemize}
+
+\textbf{Trade-off}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{더 많은 lane} = 더 높은 총 bandwidth, 하지만 더 많은 fiber, 더 큰 form factor, 더 높은 전력
+\item \textbf{적은 lane} = 더 간단, 저렴, 작은 form factor, 하지만 낮은 bandwidth
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[breakable,colback=red!5!white,colframe=red!75!black,title=\textbf{핵심 인사이트: DSP - Public Enemy Number One}]
+\setlength{\parskip}{2pt}
+
+\textbf{18K GB300 Cluster의 DSP 전력 비용}
+
+\textbf{DSP 전력 계산}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item (18,432 × 6.5W) + (27,648 × 13W) = \textbf{480 kW}
+\item Rack당 (256 racks): \textbf{1.8 kW per rack}
+\end{itemize}
+
+\textbf{DSP 점유율}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Transceiver 전력의 \textbf{50\%}
+\item Transceiver BoM의 \textbf{20-30\%}
+\item Cluster TCO의 \textbf{2-3\%}
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{"공공의 적 1호"로 불리는 이유}
+
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Transceiver 전력/비용의 절반 차지하는 단일 component
+\item GPU 수가 늘수록 exponentially 증가
+\item \textbf{근본적 비효율}: Signal degradation을 "사후 복구" (원인 미해결)
+\item 하지만 \textbf{기술적으로 제거 가능} (LPO, CPO)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{DSP 제거 시 절감 효과}:
+
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{전력}: 480 kW 제거 → 10년간 \$4.2M 절감 (cluster당)
+\item \textbf{비용}: \$9-14M 절감 (cluster당)
+\item \textbf{간접}: 전력 예산 확보, cooling 절감, reliability 향상
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{LPO vs CPO 접근}:
+
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{특성} & \textbf{LPO} & \textbf{CPO} \\
+\hline
+DSP 제거 & O & O \\
+\hline
+Form factor & Pluggable 유지 & 제거 \\
+\hline
+Copper path & 긴 경로 유지 & 극단적 단축 \\
+\hline
+결과 & 제한적 성공 & 근본적 해결 \\
+\hline
+\end{tabular}
+
+\end{tcolorbox}
 
 \subsubsection{The Crusade Against DSP}
 DSP가 차지하는 높은 비용과 전력 비율은 업계가 DSP를 중개할 수 있는 기술을 찾도록 동기를 부여했다. 
@@ -827,6 +1921,119 @@ Optical DSP에 전력을 공급하는 데 더 많은 에너지가 필요하다. 
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/957df714-e3aa-4233-baa6-d5672492cb98_936x558.png}
 \caption{Source: G Keeler, DARPA 2019, SemiAnalysis}
 \end{figure}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{핵심 인사이트: Figure of Merit (FoM) - Interconnect의 성적표}]
+\setlength{\parskip}{2pt}
+
+\textbf{1. Figure of Merit (FoM)란?}
+
+\textbf{정의}: Interconnect의 객관적 품질을 나타내는 지표
+
+\textbf{FoM 공식}:
+\[
+\text{FoM} = \frac{\text{Bandwidth Density (Gbps/mm)}}{\text{Energy Efficiency (pJ/bit)}}
+\]
+
+\textbf{더 높은 FoM = 더 좋은 interconnect}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 단위 면적(mm)당 더 많은 데이터 전송
+\item 비트당 더 적은 에너지 소비
+\item 즉, 공간 효율 × 전력 효율
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{2. 구성 요소 분해}
+
+\textbf{Bandwidth Density (대역폭 밀도)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 단위: Gbps/mm (또는 Tbps/mm)
+\item Chip shoreline 1mm당 전송 가능한 데이터량
+\item Reticle-sized chip (약 858mm$^2$, perimeter 약 120mm)에서 중요
+\item 예: 0.4 Tbps/mm × 120mm = 48 Tbps total bandwidth
+\end{itemize}
+
+\textbf{Energy Efficiency (에너지 효율)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 단위: pJ/bit (pico-Joule per bit)
+\item 1 bit 전송에 소비되는 에너지
+\item 낮을수록 좋음
+\item 예: 10 pJ/bit × 1 Tbps = 10W
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{3. 차트 해석: 거리에 따른 FoM 변화}
+
+\textbf{Pure Electrical (Copper)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Short reach (<1cm)}: 최고 FoM
+  \begin{itemize}[itemsep=0pt]
+  \item Die-to-die, chiplet interconnect
+  \item 예: UCIe, 2.5D/3D packaging
+  \item 이유: 신호 감쇠 최소, DSP 불필요
+  \end{itemize}
+\item \textbf{Medium reach (1-10cm)}: FoM 급격히 저하
+  \begin{itemize}[itemsep=0pt]
+  \item Package-to-package interconnect
+  \item 여전히 copper 가능하지만 LR SerDes 필요
+  \end{itemize}
+\item \textbf{Long reach (>10cm)}: FoM 매우 낮음
+  \begin{itemize}[itemsep=0pt]
+  \item PCB trace를 통한 연결
+  \item 높은 전력 소비, 낮은 bandwidth density
+  \end{itemize}
+\end{itemize}
+
+\textbf{Pluggable Optics}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Electrical-Optical transition에서 FoM 급락}
+  \begin{itemize}[itemsep=0pt]
+  \item E/O, O/E conversion loss
+  \item DSP chip의 높은 전력
+  \item LR SerDes 전력
+  \end{itemize}
+\item \textbf{10cm-10m 범위}: FoM이 낮지만 일정
+  \begin{itemize}[itemsep=0pt]
+  \item Optical signal은 거리에 둔감
+  \item 대부분의 전력은 DSP와 E/O conversion
+  \item 거리가 늘어나도 추가 전력 거의 없음
+  \end{itemize}
+\end{itemize}
+
+\textbf{CPO (Co-Packaged Optics)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Pluggable보다 확실히 위}: 1-10m 범위에서
+  \begin{itemize}[itemsep=0pt]
+  \item DSP 제거로 전력 대폭 절감
+  \item SR SerDes 또는 wide I/O로 전력 효율 향상
+  \item 더 높은 bandwidth density (shoreline)
+  \end{itemize}
+\item \textbf{Electrical과 optical 사이의 "sweet spot"}
+  \begin{itemize}[itemsep=0pt]
+  \item Electrical의 energy efficiency 상속 (짧은 전기 경로)
+  \item Optical의 reach 상속 (긴 광 경로)
+  \end{itemize}
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{4. "할 수 있는 곳에서는 Copper, 해야 할 때는 Optical"}
+
+이 격언을 FoM 차트가 증명:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{<1cm}: Pure copper가 왕 (chiplet, interposer)
+\item \textbf{1-2m}: Copper 가능하지만 FoM 떨어짐 (in-rack)
+\item \textbf{>2m}: Optics 필수 (rack-to-rack)
+\item \textbf{CPO의 역할}: Optics 영역(>2m)에서 FoM을 최대한 끌어올림
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{핵심 통찰}: FoM 차트는 interconnect의 "물리 법칙"을 보여줍니다. Copper는 짧은 거리에서 exponentially 좋지만, 거리가 늘어나면 exponentially 나빠집니다. Optics는 전환 비용이 크지만(E/O conversion), 일단 optical domain에 들어가면 거리에 둔감합니다. CPO는 "전환 비용을 최소화"하여 optics의 최적 FoM을 달성합니다.
+
+\end{tcolorbox}
+
 \textbf{이 차트는 또한 ``할 수 있는 곳에서는 copper를 사용하고 해야 할 때는 optical을 사용하라''는 격언을 보여준다.} 
 Copper를 통한 shorter reach communication은 사용 가능할 때 우수하다. 
 NVIDIA는 copper를 통해 네트워크로 연결될 수 있는 GPU 수를 최대화하기 위해 intra-rack density의 한계를 밀어붙이는 목적으로만 설계된 rack-scale GPU architecture로 이 mantra를 받아들인다. 
@@ -851,6 +2058,115 @@ HPC application을 위한 off-package I/O density는 단일 flip-chip BGA packag
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/5c865684-e533-400c-8fe8-ce3f6d551da3_865x473.jpg}
 \caption{Source: TSMC}
 \end{figure}
+
+\begin{tcolorbox}[breakable,colback=red!5!white,colframe=red!75!black,title=\textbf{핵심 인사이트: I/O Wall - AI 시대의 새로운 Bottleneck}]
+\setlength{\parskip}{2pt}
+
+\textbf{1. The Great Imbalance}
+
+\textbf{Transistor Density의 폭발적 증가}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Moore's Law}: Transistor 수 18-24개월마다 2배
+\item 지난 20년: 약 $2^{10}$ = 1,000배 증가
+\item FLOP (compute) 성능도 유사하게 증가
+\end{itemize}
+
+\textbf{I/O Bandwidth의 정체}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 같은 기간 I/O bandwidth는 약 10-20배만 증가
+\item \textbf{100배 격차 발생!}
+\item 차트에서 명확히 보임: Compute curve vs I/O curve 급격히 벌어짐
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{2. 왜 I/O가 느리게 증가하는가?}
+
+\textbf{Shoreline의 물리적 한계}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Shoreline}: Chip 외곽 둘레 (perimeter)
+\item Die size는 reticle limit (858mm$^2$)로 제한
+\item Perimeter: 약 $4 \times \sqrt{858} \approx$ 120mm
+\item \textbf{I/O는 shoreline을 통해서만 나갈 수 있음}
+\item Bump pitch는 물리적 한계로 더 줄이기 어려움
+\end{itemize}
+
+\textbf{Package Substrate의 한계}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Organic substrate의 \textbf{escape bandwidth} 제한
+\item 수천-수만 개의 bump를 모두 routing하기 어려움
+\item Layer 추가는 비용과 복잡도 급증
+\item HPC용 flip-chip BGA package는 plateau 도달
+\end{itemize}
+
+\textbf{SerDes Speed의 한계}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 각 I/O의 속도(Gbps)를 올리는 것도 한계 도달 중
+\item 224G SerDes는 이미 매우 어려움
+\item 448G는 더욱 어려움 (뒤에서 상세 설명)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{3. AI가 I/O를 더욱 악화시킴}
+
+\textbf{Traditional HPC vs AI}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Traditional HPC}: Compute-bound (I/O 덜 중요)
+\item \textbf{AI Training/Inference}: Communication-intensive
+  \begin{itemize}[itemsep=0pt]
+  \item All-reduce, all-gather 등 collective communication 빈번
+  \item Model parameter 교환으로 enormous 데이터 이동
+  \item Transformer architecture: Attention mechanism이 communication 유발
+  \end{itemize}
+\end{itemize}
+
+
+\vspace{0.1cm}
+
+
+\vspace{0.1cm}
+
+\textbf{4. I/O Wall의 영향}
+
+\textbf{시스템 레벨}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item GPU utilization 저하 (50-70\%로 떨어질 수 있음)
+\item Training time 증가
+\item TCO 악화 (비싼 GPU를 놀림)
+\end{itemize}
+
+\textbf{Architecture 레벨}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Model parallelism strategy 제약
+\item Scalability limit (GPU 수 늘려도 성능 향상 둔화)
+\item 새로운 architecture 탐색 필요 (예: sparse model)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{5. CPO가 해결하는 방법}
+
+\textbf{Shoreline Density 극대화}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Wide I/O (UCIe 등) 사용 가능: 10 Tbps/mm
+\item SR SerDes의 면적/전력 효율 향상
+\item 0.4 Tbps/mm → 10 Tbps/mm = \textbf{25배 향상}
+\end{itemize}
+
+\textbf{실제 예시} (가상):
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item CPO + Wide I/O로 120mm shoreline 활용
+\item 10 Tbps/mm × 120mm = 1.2 Pbps (1,200 Tbps!)
+\item Blackwell 대비 50배 이상 I/O bandwidth
+\item Arithmetic intensity를 workload에 맞출 수 있음
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{핵심 통찰}: "I/O Wall"은 AI 시대의 진짜 bottleneck입니다. Moore's Law가 계속되어도 I/O가 따라가지 못하면 GPU는 "굶주리게"이 됩니다. CPO + Wide I/O는 이 wall을 허무는 가장 유망한 해법입니다. 이것이 CPO가 단순히 "전력 절감 기술"이 아니라 "\textbf{AI scaling의 미래를 결정하는 핵심 기술}"인 이유입니다.
+
+\end{tcolorbox}
 
 \subsubsection{Electrical SerDes Scaling Bottlenecks}
 제한된 수의 I/O로 더 많은 escape bandwidth를 실현하는 방법은 각 I/O가 signaling하는 frequency를 밀어붙이는 것이다. 
@@ -900,6 +2216,139 @@ NVLink scale-up fabric이 중요한 moat인 NVIDIA의 경우, 이 roadblock은 A
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/bd2a2f28-f353-47de-903f-f469f78c1316_1184x556.png}
 \caption{Source: NVIDIA, SemiAnalysis}
 \end{figure}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: SerDes Scaling의 물리적 한계}]
+\setlength{\parskip}{2pt}
+
+\textbf{1. Insertion Loss의 exponential 증가}
+
+\textbf{Insertion Loss란?}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Signal이 medium(copper)을 통과하며 잃는 에너지
+\item 단위: dB (decibel) - 높을수록 더 많은 loss
+\item \textbf{Frequency dependent}: 고주파수일수록 loss 커짐
+\item \textbf{Distance dependent}: 거리가 길수록 loss 커짐
+\end{itemize}
+
+\textbf{왜 고주파수에서 loss가 커지는가?}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Skin effect}: 전류가 표면에만 흐르면서 저항 증가
+\item \textbf{Dielectric loss}: PCB 절연체가 고주파수를 흡수
+\item \textbf{Radiation loss}: 고주파수 신호가 전자기파로 방출
+\end{itemize}
+
+\textbf{구체적 수치} (차트 기반):
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 56G SerDes (28 GHz): 10cm에서 약 20 dB loss
+\item 112G SerDes (56 GHz): 10cm에서 약 35 dB loss
+\item \textbf{224G SerDes (112 GHz): 10cm에서 약 50+ dB loss}
+\item 448G SerDes (224 GHz): 10cm에서 추정 80+ dB loss (거의 불가능)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{2. 왜 224G SerDes가 어려운가?}
+
+\textbf{PAM4 with 224G}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 224 Gbps ÷ 2 bits/symbol = 112 Gbaud
+\item 112 Gbaud = 112 GHz fundamental frequency
+\item PCB trace를 통과하면 50+ dB insertion loss
+\item \textbf{50 dB = 신호가 1/100,000로 감소!}
+\end{itemize}
+
+\textbf{Recovery의 어려움}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{Equalization}: 고주파수 성분을 선택적으로 증폭
+  \begin{itemize}[itemsep=0pt]
+  \item Transmitter equalization (pre-emphasis)
+  \item Receiver equalization (CTLE, DFE)
+  \item 매우 복잡한 회로, 높은 전력 소비
+  \end{itemize}
+\item \textbf{CDR (Clock Data Recovery)}: 저하된 신호에서 clock 추출 극도로 어려움
+\item \textbf{Noise margin}: PAM4의 4개 level이 noise에 묻힘
+\end{itemize}
+
+\textbf{전력 소비 폭발}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 56G SerDes: 약 20-30 mW/lane
+\item 112G SerDes: 약 40-50 mW/lane
+\item \textbf{224G SerDes: 추정 80-100+ mW/lane}
+\item 448G SerDes: 예상 150-200 mW/lane (untenable)
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{3. 448G SerDes의 딜레마}
+
+\textbf{PAM4 approach} (현재 표준):
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 448 Gbps ÷ 2 bits/symbol = \textbf{224 Gbaud}
+\item 224 GHz frequency → 거의 불가능한 insertion loss
+\item 전력 소비가 untenable 수준 (150-200 mW/lane)
+\end{itemize}
+
+\textbf{Higher-order modulation} (PAM6, PAM8):
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{PAM6}: 6 levels → log$_2$(6) ≈ 2.58 bits/symbol
+  \begin{itemize}[itemsep=0pt]
+  \item 448 Gbps ÷ 2.58 = 174 Gbaud (PAM4보다 나음)
+  \item 하지만 level 간 margin 더 좁아짐
+  \end{itemize}
+\item \textbf{PAM8}: 8 levels → 3 bits/symbol
+  \begin{itemize}[itemsep=0pt]
+  \item 448 Gbps ÷ 3 = 149 Gbaud (더 나음)
+  \item 하지만 noise margin 극도로 작아짐 (level 간 1/8)
+  \item DSP 복잡도와 전력 급증
+  \end{itemize}
+\end{itemize}
+
+\textbf{NVIDIA의 해법: Bi-directional SerDes}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 하나의 wire에서 양방향 동시 전송
+\item 2 × 224G = 448G effective
+\item 영리하지만 복잡도 증가, echo cancellation 필요
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{4. NVLink Scaling의 위기}
+
+\textbf{NVLink 역사} (차트 참고):
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{NVLink 1.0}: 20G × 32 lanes = 640 Gbps
+\item \textbf{NVLink 2.0}: 25G × 32 lanes = 800 Gbps
+\item \textbf{NVLink 3.0}: 50G × 32 lanes = 1.6 Tbps
+\item \textbf{NVLink 4.0}: 100G × 36 lanes = 3.6 Tbps
+\item \textbf{NVLink 5.0}: 200G × 36 lanes = 7.2 Tbps
+\end{itemize}
+
+\textbf{핵심 관찰}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Lane 수: 32 → 36 (거의 변화 없음)
+\item \textbf{SerDes speed}: 20G → 200G (\textbf{10배 증가})
+\item Bandwidth 증가는 대부분 SerDes speed에서 나옴
+\end{itemize}
+
+\textbf{NVLink 6.0의 문제} (Rubin):
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item NVIDIA는 200G SerDes에 머물 것으로 예상
+\item 대신 \textbf{bi-directional SerDes}로 448G 달성
+\item 하지만 이것도 한계: Lane 수를 늘리기 어려움 (shoreline 제한)
+\item \textbf{Beyond NVLink 6.0}: Scaling path가 불투명
+\end{itemize}
+
+\textbf{경쟁자들의 기회}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item NVIDIA의 NVLink가 plateau → moat 약화
+\item AMD, Intel, hyperscaler들이 따라잡기 쉬워짐
+\item NVIDIA에게는 existential threat
+\end{itemize}
+
+\textbf{핵심 통찰}: SerDes scaling의 물리적 한계는 단순히 "기술적 도전"이 아니라 "\textbf{AI 업계의 구조를 바꿀 수 있는 전환점}"입니다. NVIDIA의 NVLink moat가 SerDes plateau로 무너질 수 있습니다. CPO는 이 위기에서 NVIDIA를 구할 수 있는 핵심 기술입니다.
+
+\end{tcolorbox}
+
 이 딜레마에 대한 솔루션 또는 다른 방식으로 표현하면 필요한 타협은 electrical I/O를 가능한 한 짧게 하고 더 높은 bandwidth를 달성하기 위해 host ASIC에 가능한 한 가까운 곳에서 optical link로 데이터 전송을 offload하는 것이다. 
 이것이 CPO가 interconnect의 \textbf{holy grail}로 간주되는 이유이다. 
 CPO는 substrate를 통해서든 interposer를 통해서든 ASIC package에서 optical communication이 발생하도록 허용한다. 
@@ -936,6 +2385,158 @@ Reticle sized chip의 long edge에서 이것은 최대 330 Tbit/s (41TByte/s)의
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/7d2ac70e-d96d-42c9-b8be-3c186d60597e_2392x570.png}
 \caption{Source: SemiAnalysis}
 \end{figure}
+
+\begin{tcolorbox}[breakable,colback=green!5!white,colframe=green!75!black,title=\textbf{기술 용어: Wide I/O vs SerDes - Paradigm Shift}]
+\setlength{\parskip}{2pt}
+
+\textbf{1. SerDes vs Wide I/O의 근본적 차이}
+
+\textbf{SerDes (Serializer/Deserializer)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{개념}: 병렬 데이터를 직렬로 변환하여 \textbf{소수의 고속 lane}으로 전송
+\item \textbf{예시}: 32 bit 데이터를 1개의 224G lane으로 serialize
+\item \textbf{장점}: 적은 wire 수, 긴 거리 지원
+\item \textbf{단점}: 복잡한 회로, 높은 전력, 고주파수 신호
+\end{itemize}
+
+\textbf{Wide I/O (Parallel Interface)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{개념}: \textbf{다수의 저속 lane}으로 병렬 전송
+\item \textbf{예시}: 32 bit 데이터를 32개의 저속 lane으로 동시 전송
+\item \textbf{장점}: 간단한 회로, 낮은 전력, 저주파수 신호
+\item \textbf{단점}: 많은 wire 필요, 짧은 거리만 지원
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{2. UCIe (Universal Chiplet Interconnect Express)}
+
+\textbf{UCIe란?}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Chiplet 간 interconnect를 위한 \textbf{industry standard}
+\item Wide I/O 기반 (parallel interface)
+\item Intel, AMD, ARM, TSMC 등 주요 업체 참여
+\end{itemize}
+
+\textbf{UCIe-A (Advanced Package)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{목표}: Interposer 기반 (2.5D/3D packaging)
+\item \textbf{거리}: Sub-2mm (매우 짧음)
+\item \textbf{Bandwidth density}: \textbf{최대 10 Tbps/mm}
+\item \textbf{전력 효율}: 매우 우수 (저주파수)
+\end{itemize}
+
+\textbf{UCIe-S (Standard Package)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{목표}: Organic substrate 기반
+\item \textbf{거리}: 수 mm ~ 수 cm
+\item \textbf{Bandwidth density}: 약 1.8 Tbps/mm
+\item \textbf{전력 효율}: 여전히 SerDes보다 좋음
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{3. Bandwidth Density 비교}
+
+\textbf{Reticle-sized chip의 shoreline} (약 120mm):
+
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Technology} & \textbf{Density} & \textbf{Total BW} \\
+\hline
+224G SerDes (LR) & 0.4 Tbps/mm & 48 Tbps \\
+\hline
+UCIe-S (substrate) & 1.8 Tbps/mm & 216 Tbps \\
+\hline
+UCIe-A (interposer) & 10 Tbps/mm & \textbf{1,200 Tbps} \\
+\hline
+\end{tabular}
+
+\textbf{Blackwell 실제}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Off-package BW: 23.6 Tbps (NVLink 5.0)
+\item Shoreline density: 약 0.4 Tbps/mm
+\item \textbf{UCIe-A 대비 25배 차이!}
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{4. 왜 Wide I/O가 CPO에 최적인가?}
+
+\textbf{거리가 문제가 아니므로}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item CPO에서 electrical path는 2-5mm (매우 짧음)
+\item Wide I/O의 단점(짧은 거리)이 문제 없음
+\item \textbf{장점만 취함}: 높은 bandwidth density + 낮은 전력
+\end{itemize}
+
+\textbf{SerDes의 불필요한 복잡도 제거}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item Serialization/Deserialization 회로 제거
+\item Clock recovery 회로 단순화 (clock forwarding 사용)
+\item Equalization 최소화 (신호 깨끗함)
+\end{itemize}
+
+\textbf{전력 효율 극대화}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item 저주파수 신호 → 낮은 전력
+\item 간단한 회로 → 작은 면적
+\item 예: UCIe-A는 224G SerDes 대비 전력 50-70\% 절감 추정
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{5. 왜 Broadcom/NVIDIA는 SerDes를 고집하는가?}
+
+\textbf{Hybrid 전략}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{In-rack copper}: 여전히 필요 (CPC)
+  \begin{itemize}[itemsep=0pt]
+  \item Copper는 1-2m 거리에서 SerDes 필요
+  \item Wide I/O는 copper에 부적합
+  \end{itemize}
+\item \textbf{CPO/Optics}: Wide I/O 사용
+\item \textbf{동일 silicon에 둘 다 지원}: 여러 tape-out 피하기
+\end{itemize}
+
+\textbf{점진적 migration}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item CPO 채택이 느릴 것으로 예상
+\item 당분간 SerDes 기반 copper 계속 사용
+\item Wide I/O 전용 chip은 niche market
+\end{itemize}
+
+\textbf{SerDes IP 활용}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item NVIDIA/Broadcom은 세계 최고 SerDes IP 보유
+\item 기존 투자 활용
+\end{itemize}
+
+\vspace{0.1cm}
+
+\textbf{6. 미래: Wide I/O의 승리?}
+
+\textbf{Short term (2025-2027)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item SerDes 기반 CPO가 주류
+\item UCIe-S (substrate) 일부 사용
+\end{itemize}
+
+\textbf{Medium term (2027-2030)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item UCIe-S 더 널리 사용
+\item Interposer 기반 CPO 등장 시작
+\end{itemize}
+
+\textbf{Long term (2030+)}:
+\begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
+\item \textbf{UCIe-A (interposer) 기반 CPO가 ultimate goal}
+\item 10 Tbps/mm bandwidth density
+\item SerDes는 copper-only application으로 제한
+\end{itemize}
+
+\end{tcolorbox}
+
 물론 이것은 like-for-like 비교가 아닌데, 이러한 off-package PHY는 긴 거리를 구동하는 데 필요하기 때문이다. 
 어떤 것이든 이것이 설명되고 있는 바로 그 point이다: CPO를 사용하면 signal이 electrically하게 긴 거리로 구동되지 않기 때문에 reach는 더 이상 고려 사항이 아니다. 
 10 Tbit/s/mm의 bandwidth density에서 bottleneck은 더 이상 electrical interface에 있지 않고 link의 다른 부분에 있으며, 
@@ -975,6 +2576,20 @@ CPO switch 또는 optical engine은 공장에서 완전히 조립되고 테스�
 이는 설치 variation, 손상, contamination 및 system과 optical module 간의 compatibility 문제로 이어질 수 있다.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \newpage{}
 \section{Part 3: Bringing CPO to Market and deployment challenges}
 
@@ -1002,6 +2617,23 @@ Scale-up networking. CPO와 관련하여 집중해야 할 몇 가지 핵심 comp
 \end{enumerate}
 
 \subsection{Host and Optical Engine Packaging}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: CPO Packaging의 핵심 구성요소}]
+
+\textbf{PIC (Photonic Integrated Circuit)}: Photodetector와 modulator를 포함하는 optical component가 집적된 회로. Silicon photonics process를 통해 제조되며, 빛의 생성, 변조, 전송을 담당한다.
+
+\textbf{EIC (Electric Integrated Circuit)}: Driver와 Transimpedance Amplifier (TIA)를 포함하는 electrical 회로. CMOS process로 제조되며, electrical signal을 optical signal로 변환하거나 그 역을 수행한다.
+
+\textbf{Monolithic Integration}: PIC와 EIC를 동일한 silicon wafer에 제조하는 방식. Parasitic과 latency가 가장 낮지만, 약 35nm 미만의 geometry에서 한계를 가진다.
+
+\textbf{Heterogeneous Integration}: SiPho process로 PIC를 제조하고 advanced packaging을 통해 CMOS wafer의 EIC와 통합하는 방식. 3D integration을 통해 최고의 성능 제공.
+
+\textbf{Hybrid Bonding}: Die-to-wafer 또는 wafer-to-wafer bonding 기술로, bump 없이 직접 연결하여 trace 길이를 최소화하고 parasitic을 감소시킨다. TSMC SoIC가 대표적.
+
+\textbf{FAU (Fiber Array Unit)}: 여러 optical fiber를 정밀하게 정렬하여 optical engine에 연결하는 unit. Coupling efficiency와 manufacturing yield에 중요한 영향을 미친다.
+
+\end{tcolorbox}
+
 이름에서 알 수 있듯이 \textbf{Co-packaged optics}는 근본적으로 packaging 및 assembly 과제이다.
 optical engine은 optical 및 electrical component를 모두 가지고 있다. 
 Photodetector와 modulator는 \textbf{Photonic Integrated Circuit (PIC)}에 포함된 optical component이다. 
@@ -1030,6 +2662,21 @@ Trace 길이를 줄이면 parasitic이 크게 감소하고 따라서 coupling ef
 3D integration은 bandwidth와 전력 관점에서 CPO의 성능 목표에 도달하는 유일한 방법이다.
 
 \subsection{TSMC COUPE is emerging as the integration option of choice}
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: TSMC COUPE - CPO Ecosystem의 새로운 표준}]
+
+TSMC가 역사적으로 silicon photonics에서 제한적 존재감을 가졌음에도 불구하고 \textbf{COUPE (COmpact Universal Photonic Engine)}가 업계 표준으로 급부상하고 있다. 이는 세 가지 핵심 요인에 기인한다:
+
+\textbf{1. 기술적 우위}: TSMC는 유일하게 합리적 scale에서 die-to-wafer hybrid bonding을 성공적으로 입증한 foundry이다. SoIC (System-on-Integrated-Chips) bumpless interface는 monolithic 통합 다음으로 가장 짧은 trace 길이를 제공하며, iso-power에서 bump 기반 통합보다 23배 이상의 bandwidth density를 달성한다.
+
+\textbf{2. 통합 ecosystem}: COUPE는 단순한 manufacturing process가 아닌 완전한 솔루션이다. EIC (N7 node), PIC (SOI N65 node), 3D stacking, optical I/O design, 완전한 PDK 및 EDA workflow까지 포함한다. 이는 설계자가 fragmented supply chain을 관리할 필요 없이 end-to-end 솔루션을 얻을 수 있음을 의미한다.
+
+\textbf{3. Vendor lock-in 효과}: COUPE를 채택하면 사실상 TSMC 제조 PIC를 사용하기로 commit하는 것이다. TSMC는 다른 foundry의 SiPho wafer를 package하지 않기 때문이다. 이는 TSMC가 value chain의 더 많은 부분을 포착할 수 있게 한다.
+
+결과적으로 NVIDIA, Broadcom, Ayar Labs 등 주요 player들이 기존 solution에서 COUPE로 pivot하고 있다. 특히 Broadcom은 SPIL FOWLP 접근 방식이 parasitic capacitance로 인해 lane당 100G를 넘어 scaling할 수 없다는 것을 인식하고 COUPE로 전환했다. 이는 단순히 하나의 기술 옵션이 아닌, CPO 산업의 \textbf{de facto standard}가 되어가고 있음을 시사한다.
+
+\end{tcolorbox}
+
 TSMC는 fabless giant와 startup 모두를 위한 차세대 OE의 foundry 파트너로 선택되어 앞서 나가고 있다. 
 CPO endpoint를 특징으로 하는 첫 번째 high-volume 제품은 \textbf{COmpact Universal Photonic Engine (COUPE)} 이름으로 소개되고 있다. 
 여기에는 EIC 및 PIC의 제조와 TSMC의 COUPE 솔루션에 따른 heterogeneous integration이 포함된다. 
@@ -1129,6 +2776,21 @@ CoWoS assembly를 완료하기 위한 'on Substrate' 단계를 위해 interposer
 추가로 이러한 과제는 interposer/substrate 크기가 확장됨에 따라 더욱 두드러지는 warpage 문제로 인해 악화된다.
 
 \subsection{FAUs and Fiber Coupling}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Fiber Coupling 방식의 이해}]
+
+\textbf{Edge Coupling (EC)}: Fiber를 chip의 edge를 따라 정렬하는 방식. Fiber 끝의 microlens가 빛을 chip으로 집중시키고, waveguide taper가 점진적으로 넓어져 smooth mode transition을 제공한다. 낮은 coupling loss (<1dB), 광범위한 wavelength 지원, polarization insensitivity의 장점을 가지지만, 1D 구조로 fiber density가 제한되고 die stacking과 호환되지 않는다.
+
+\textbf{Grating Coupling (GC)}: 빛이 위에서 들어오고 주기적 grating 구조가 빛을 아래로 scatter하여 waveguide로 유도하는 방식. 2D density 가능, 더 작은 footprint, 간단한 제조, interposer 배치 가능의 장점을 가지지만, 더 높은 optical loss (3-5dB)와 더 좁은 optical bandwidth를 가진다. NVIDIA와 TSMC가 선호하는 방식.
+
+\textbf{Fiber Pitch}: Fiber 간의 간격. 현재 최소 pitch는 127µm (mm당 최대 8개 fiber)이며, 업계는 80µm pitch와 multicore fiber를 향해 발전 중이다.
+
+\textbf{Insertion Loss}: Optical signal이 fiber에서 waveguide로 coupling될 때 발생하는 power loss. EC는 일반적으로 <1dB, GC는 3-5dB의 insertion loss를 가진다.
+
+\textbf{Waveguide Taper}: EC에서 사용되는 점진적으로 넓어지는 waveguide 구조. Reflection과 scattering을 줄여 coupling efficiency를 향상시킨다.
+
+\end{tcolorbox}
+
 Fiber는 데이터를 전송하기 위해 OE에서 나온다. 하나의 optical lane은 2개의 fiber 또는 하나의 fiber pair (transmit plus receive)로 구성된다. 
 \textbf{Fiber coupling} (원활하고 효율적인 빛 전송을 위해 fiber를 on-chip waveguide와 정밀하게 정렬하는 것)은 CPO에서 중요하고 도전적인 단계이며, 
 \textbf{Fiber Array Unit (FAU)}는 그 과정을 지원하기 위해 CPO에서 널리 사용된다. 
@@ -1185,6 +2847,25 @@ TSMC도 COUPE platform에서 지원되는 GC에 대한 더 높은 선호도를 �
 \end{figure}
 
 \subsection{Laser Type and Wavelength Division Multiplexing (WDM)}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Laser와 Wavelength Multiplexing}]
+
+\textbf{ELS (External Light Source)}: Laser가 fiber를 통해 optical engine에 연결된 별도의 module에 위치하는 방식. 주로 OSFP와 같은 pluggable form factor 사용. Field servicing이 간단하지만 connector loss, fiber coupling loss, modulator inefficiency로 인해 높은 전력 소비 (laser와 TEC가 전력의 ~70% 차지).
+
+\textbf{CWDM (Coarse Wavelength Division Multiplexing)}: 일반적으로 20nm spacing으로 더 적은 channel을 전달하는 방식. Wider spacing으로 capacity가 제한됨.
+
+\textbf{DWDM (Dense Wavelength Division Multiplexing)}: 매우 tight spacing (종종 <1nm)으로 많은 lane을 pack하는 방식. 40, 80 또는 100+ channel 수용 가능. 제한된 fiber pair를 최대화하는 데 핵심적.
+
+\textbf{Lambda (λ)}: 개별 optical lane의 개별 wavelength를 지칭. 각 lambda는 하나의 modulator를 필요로 한다.
+
+\textbf{DFB (Distributed FeedBack) Laser}: Single wavelength를 생성하는 laser type. Lumentum이 single high-power DFB와 DFB array를 제공.
+
+\textbf{Quantum-dot Mode-locked Comb}: 여러 wavelength를 동시에 생성하는 laser 기술. Innolume이 개발 중.
+
+\textbf{Pumped Nonlinear Resonant Comb}: 여러 wavelength를 생성하는 또 다른 접근법. Xscape, Enlightra, Iloomina가 개발 중.
+
+\end{tcolorbox}
+
 Laser를 CPO에 통합하는 두 가지 주요 방법이 있다.
 첫 번째 접근 방식인 on-chip laser는 일반적으로 III‑V (InP) 재료를 silicon에 bonding하여 laser와 modulator를 동일한 photonic chip에 통합한다. 
 On-chip laser는 design을 단순화하고 insertion loss를 줄이지만 몇 가지 과제가 있을 수 있다:
@@ -1234,6 +2915,30 @@ WDM이 중요한 이유는 오늘날 제안된 대부분의 CPO 구현이 optica
 제한된 fiber pair는 각 fiber pair가 최대화되어야 함을 의미한다.
 
 \subsection{Modulator Types}
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: Modulator 선택 - 성능과 Scalability의 Trade-off}]
+
+Modulator 선택은 CPO system의 성능, 전력 효율, scalability를 결정하는 가장 중요한 architectural decision 중 하나이다. 세 가지 주요 modulator type은 각각 명확한 trade-off를 가진다:
+
+\textbf{MZM (Mach-Zehnder Modulator) - "High Performance, Low Density"}:
+- 장점: 가장 낮은 thermal sensitivity, 200 Gbaud 달성 가능, PAM4/QAM 등 advanced modulation 지원, 낮은 chirp
+- 단점: 매우 큰 크기 (~12,000mm²), 높은 전력 소비, 높은 bias voltage 필요
+- 채택: Nubis 등 일부 startup이 사용하지만 제한적
+
+\textbf{MRM (Micro-Ring Modulator) - "High Density, High Complexity"}:
+- 장점: 극도로 compact (25-225mm²), WDM에 최적 (built-in mux/demux), 매우 낮은 전력, 낮은 driving voltage
+- 단점: 10-100배 더 temperature-sensitive, non-linear (higher-order modulation 복잡), 정밀한 control 필요, 표준화 어려움
+- 채택: NVIDIA, TSMC, Ayar Labs, Lightmatter, Ranovus가 집중 - \textbf{업계 주류 선택}
+
+\textbf{EAM (Electro-Absorption Modulator) - "Thermal Resilience, Limited Ecosystem"}:
+- 장점: MRM보다 훨씬 낮은 temperature sensitivity (35°C instant shift 견딤), MZM보다 작고 낮은 전력 (~250mm²)
+- 단점: GeSi reliability 우려, C-band로 제한 (O-band ecosystem 활용 불가), MRM/MZI보다 높은 insertion loss (4-5dB), 별도 multiplexer 필요
+- 채택: Celestial AI가 거의 유일 - XPU 아래 interposer 배치에 thermal tolerance 활용
+
+\textbf{산업적 함의}: NVIDIA와 TSMC의 MRM 선택은 단순한 기술 선호가 아니다. MRM은 구현 난이도가 높지만, TSMC의 advanced CMOS expertise와 결합하여 high-precision, 훌륭한 Q-factor 달성이 가능하다. 이는 결국 \textbf{MRM의 potential bandwidth density 우위}가 CPO scaling의 핵심이 될 것임을 시사한다. 반면 EAM의 thermal advantage는 특정 niche application (co-packaged compute chiplet)에서 차별화 요소가 될 수 있다.
+
+\end{tcolorbox}
+
 Laser가 PIC에 들어가면 electronic signal이 laser의 wavelength로 encoding되는 modulation 단계 (driver에 의해 구동됨)를 거친다. 
 이 과정에 사용되는 세 가지 주요 modulator type은 \textbf{Mach-Zender Modulator (MZM)}, \textbf{Micro-Ring Modulator (MRM)} 및 \textbf{Electro-Absorption Modulator (EAM)}이다. 각 개별 lambda (개별 optical lane의 개별 wavelength)는 하나의 modulator를 필요로 한다.
 
@@ -1376,6 +3081,29 @@ EAM은 MRM 및 MZI와 비교하여 여러 이점을 가지고 있다:
 하지만 만약 우리가 free hand로 차세대 interconnect를 design할 수 있다면 이 세대와 그 이후를 위해 더 큰 bandwidth를 가능하게 하는 접근 방식은 무엇일까?
 
 \subsection{Key approaches for scaling bandwidth}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Bandwidth Scaling의 핵심 Parameter}]
+
+\textbf{Baud Rate}: 초당 전송되는 symbol 수. 현재 advanced system은 100 Gbaud에서 작동하며, 업계는 200 Gbaud를 추진 중. Higher baud rate는 modulator가 더 높은 frequency에서 switch하도록 요구.
+
+\textbf{Modulation Scheme}:
+- \textbf{NRZ (Non-Return-to-Zero)}: Symbol당 1 bit 전송
+- \textbf{PAM4 (4-level Pulse Amplitude Modulation)}: 4개의 다른 amplitude로 symbol당 2 bit 전송
+- \textbf{PAM6}: Symbol당 ~2.6 bits 전송 (연구 단계)
+- \textbf{PAM8}: Symbol당 3 bits 전송 (연구 단계)
+- \textbf{DP-16QAM}: 두 orthogonal plane, 각각 4 amplitude × 4 phase = 총 256 가능 signal (signal당 8 bit)
+
+\textbf{Lane Speed 계산}: Baud Rate × Bits per Symbol = Lane Speed
+- 예: 100 Gbaud × 2 bits (PAM4) = 200 Gbit/s per lane
+
+\textbf{Fast and Narrow}: FAU당 더 적은 수의 fiber (높은 두 자릿수)와 각 fiber pair에서 빠른 link. Higher baud rate와 advanced modulation에 의존.
+
+\textbf{Slow and Wide}: 훨씬 더 많은 수의 fiber pair (finer pitch)와 개별 fiber pair당 느린 bandwidth. Fiber density와 WDM에 의존.
+
+\textbf{Fiber Pitch}: Fiber 간격. 현재 최소 127µm (mm당 8 fiber), 목표는 80µm pitch와 multicore fiber.
+
+\end{tcolorbox}
+
 Co-packaged optical engine에서 bandwidth를 scaling하기 위한 주요 접근 방식을 논의해보자:
 
 \begin{enumerate}
@@ -1429,6 +3157,37 @@ CPO의 과제는 package 외부와 전체 system으로 확장된다.
 Fiber 관리, front plate density, external laser는 모두 과제인 필수 부분이다. CPO를 가능하게 하려면 chip 회사가 고객이 배포할 수 있는 end-to-end 솔루션을 제공해야 한다. 이것은 특히 성능을 확장하기 위한 system design에 집중하고 있는 NVIDIA에서 우리가 보고 있는 추세의 연속이다.
 
 \subsection{Proprietary solutions vs standards}
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: CPO의 근본적 딜레마 - Interoperability vs Innovation Speed}]
+
+CPO는 pluggable optics의 성공 model과 근본적으로 다른 paradigm을 요구하며, 이는 업계에 심각한 딜레마를 제시한다.
+
+\textbf{Pluggable의 성공 공식}:
+- Electrical: OIF가 표준 관리
+- Optical: IEEE 802.3 PMD layer가 modulation, lane speed, wavelength 등 정의
+- Mechanical: MSA가 form factor와 multi-vendor interoperability 보장
+→ 결과: 완벽한 plug-and-play, multi-vendor ecosystem, 경쟁적 가격
+
+\textbf{CPO의 현실}:
+CPO는 단순히 optics를 package 내부로 이동시킨 것이 아니다. 전체 \textbf{system-level 문제}가 된다:
+- Fiber management가 chassis 내부로 이동
+- Front plate density 최적화 필요
+- Modulator architecture 선택이 wavelength band 결정 (O-band vs C-band)
+- External laser module 통합
+- FAU coupling precision과 thermal management
+
+이러한 복잡성 때문에 NVIDIA와 같은 vendor는 \textbf{end-to-end 솔루션}을 제공해야 한다. 고객이 여러 vendor의 component를 mix-and-match할 수 없다.
+
+\textbf{딜레마의 본질}:
+1. \textbf{Standards-first 접근}: Interoperability 보장, multi-vendor 경쟁, 낮은 가격 → 하지만 innovation이 느려지고, 누가 초기 R\&D 비용을 감당하나?
+2. \textbf{Proprietary-first 접근}: 빠른 innovation, vendor가 investment 회수 가능 → 하지만 customer lock-in, 제한된 채택
+
+\textbf{현재 상황}: CPO는 "wild west" 단계. NVIDIA Spectrum-X, Broadcom Bailly/Humboldt는 각각 완전히 다른 proprietary solution. OIF의 새로운 high-density interconnect 노력 (CPX paradigm)이 이를 해결하려 하지만, 성공 여부는 미지수.
+
+\textbf{산업적 함의}: 역설적이게도, CPO의 광범위한 채택은 초기에 proprietary solution의 성공에 달려 있을 수 있다. NVIDIA와 같은 major vendor가 volume을 창출하고 supply chain을 성숙시켜야만, 그 다음에 표준화와 interoperability 논의가 의미를 가질 것이다. Pluggable이 즉시 표준화된 것이 아니라 GBIC → SFP → SFP+ → QSFP → QSFP-DD로 진화했듯이, CPO도 유사한 경로를 밟을 가능성이 높다.
+
+\end{tcolorbox}
+
 CPO 채택에 대한 한 가지 주요 과제는 잘 확립되고 매우 상호운용 가능한 pluggable optics model에 대한 업계의 뿌리 깊은 의존을 극복하면서 interoperability를 달성하는 것이다.
 Interoperability의 세 가지 주요 flavor가 있다: (1) electrical, (2) optical, 그리고 (3) mechanical 
 Pluggable의 경우 interoperability는 다음과 같은 특성이 있다:
@@ -1458,6 +3217,50 @@ OIF, IEEE standard 및 MSA의 조합을 통해 pluggable transceiver는 광범�
 이를 위한 한 가지 접근 방식은 co-packaged OE가 wavelength, speed 및 modulation에 대한 Ethernet standard 또는 MSA와 align하는 photonic component---laser, modulator 및 photodiode와 같은---와 함께 표준화된 fiber interface를 따르는 component level에서 표준화된 솔루션을 채택하는 것일 수 있다. 이는 진정한 interoperability를 가능하게 하여 고객이 한 vendor에서 모든 장비를 조달할 필요 없이 다양한 vendor의 제품을 mix and match할 수 있게 한다. OE가 socketable하다면 operator는 failure의 경우 쉽게 교체할 수 있다. 그러한 표준화는 또한 고객을 위한 비용을 낮출 수 있는 더 경쟁적이고 강력한 multi-vendor 시장을 만들 것이다. 또한 고객이 한 vendor에 얽매이지 않고 lead time, 가격 또는 고유한 기능을 기반으로 다양한 vendor를 선택할 수 있게 한다.
 
 \subsection{Serviceability and reliability}
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: CPO의 아킬레스건 - Serviceability의 현실}]
+
+NVIDIA가 CPO의 reliability 이점을 강조하지만, \textbf{serviceability는 datacenter operator의 가장 큰 우려사항}이다. 이는 단순한 engineering 문제가 아닌 \textbf{operational paradigm shift}이다.
+
+\textbf{Pluggable의 운영 모델 (현재)}:
+1. Front panel에서 고장난 transceiver 감지
+2. Hot-swap으로 새 transceiver 교체 (< 5분)
+3. 전문 technician 불필요, downtime 최소화
+→ "Finger-replaceable unit" 수준의 serviceability
+
+\textbf{CPO의 운영 현실 (Quantum-X CPO switch 예시)}:
+1. 36개 OE가 substrate에 flip-chip bonding
+2. 각 OE에서 fiber ribbon이 fiber cassette를 통해 routing
+3. FAU는 detachable하지만 chassis 내부 깊숙이 위치
+4. 고장 발생 시:
+   - Chassis를 열어야 함
+   - 다른 fiber를 방해하지 않고 고장난 FAU 제거
+   - Cassette를 통해 새 FAU를 정밀하게 재부착
+   - Sub-micron accuracy로 submicron waveguide에 정렬
+   - Cramped하고 thermally active한 환경에서 작업
+
+\textbf{비용 함의}:
+- 숙련된 technician 필요 (일반 datacenter operator 불가)
+- 장시간 downtime (시간 단위)
+- Collateral damage risk (인접 fiber 손상 가능성)
+- Preventive maintenance complexity 증가
+
+\textbf{Reliability vs Serviceability Paradox}:
+CPO는 이론적으로 더 reliable할 수 있다 (fewer connector, shorter electrical path). 하지만 실제 datacenter 운영에서 중요한 것은:
+- \textbf{MTBF (Mean Time Between Failures)} < \textbf{MTTR (Mean Time To Repair) × Operational Complexity}
+
+현재 CPO는 MTBF가 더 높을 수 있지만, MTTR × Complexity가 훨씬 크다. 100,000개의 port를 운영하는 hyperscaler에게는 \textbf{"How fast can I fix it?"이 "How often does it fail?"보다 더 중요할 수 있다}.
+
+\textbf{산업적 함의}: CPO가 mainstream이 되려면, serviceability model의 근본적 혁신이 필요하다:
+- Socketable OE with known-good-die testing
+- Tool-less FAU replacement mechanism
+- Automated fiber alignment system
+- 또는 MTBF가 MTTR × Complexity를 압도할 정도로 높아야 함
+
+이것이 해결되지 않으면, CPO는 tier-1 hyperscaler의 mission-critical deployment가 아닌, niche high-performance application으로 제한될 수 있다.
+
+\end{tcolorbox}
+
 CPO가 광범위하게 채택되기 전에 해결되어야 하는 문제는 fiber coupling에서 나온다. 
 Pluggable optical module에서 silicon photonics device에 fiber를 연결하는 것은 상대적으로 간단한 반면, 
 CPO를 위해 optical engine에 fiber를 coupling하는 것은 훨씬 더 어렵다. 
@@ -1482,6 +3285,18 @@ Fiber 성능은 특히 bending과 같은 물리적 disturbance에 매우 민감�
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/4c4bc227-338d-431e-8342-6ca63e6cf631_1024x516.jpg}
 \caption{Source: NVIDIA}
 \end{figure}
+
+
+
+
+
+
+
+
+
+
+
+\newpage{}
 
 \section{Part 4: CPO Products of Today and Tomorrow}
 이 part에서 우리는 오늘날 시장에 있거나 곧 시장에 출시될 CPO 제품을 소개하는 것으로 시작하여 NVIDIA와 Broadcom의 portfolio로 시작하고 다양한 CPO 중심 기업의 offering을 설명하는 것으로 이동할 것이다. \textbf{Intel CPO, MediaTek의 CPO 작업,} \textbf{Ayar Labs, Nubis, Celestial AI, Lightmatter, Xscape Photonics, Ranovus 및 Scintil}을 다루며, 각 제공업체의 솔루션을 상세히 설명하고 각 기업의 접근 방식에 대한 중요한 장단점을 평가한다. 마지막으로 Optical Engine 및 External Laser Source와 같은 주요 CPO component의 manufacturing, testing 및 assembly를 다루는 supply chain을 논의하기 위해 다시 돌아올 것이다.
