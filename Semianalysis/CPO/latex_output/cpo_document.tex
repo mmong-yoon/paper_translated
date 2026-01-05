@@ -2621,14 +2621,19 @@ Scale-up networking. CPO와 관련하여 집중해야 할 몇 가지 핵심 comp
 \begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: CPO Packaging의 핵심 구성요소}]
 
 \textbf{PIC (Photonic Integrated Circuit)}: Photodetector와 modulator를 포함하는 optical component가 집적된 회로. Silicon photonics process를 통해 제조되며, 빛의 생성, 변조, 전송을 담당한다.
+\vspace{2mm}
 
 \textbf{EIC (Electric Integrated Circuit)}: Driver와 Transimpedance Amplifier (TIA)를 포함하는 electrical 회로. CMOS process로 제조되며, electrical signal을 optical signal로 변환하거나 그 역을 수행한다.
+\vspace{2mm}
 
 \textbf{Monolithic Integration}: PIC와 EIC를 동일한 silicon wafer에 제조하는 방식. Parasitic과 latency가 가장 낮지만, 약 35nm 미만의 geometry에서 한계를 가진다.
+\vspace{2mm}
 
 \textbf{Heterogeneous Integration}: SiPho process로 PIC를 제조하고 advanced packaging을 통해 CMOS wafer의 EIC와 통합하는 방식. 3D integration을 통해 최고의 성능 제공.
+\vspace{2mm}
 
 \textbf{Hybrid Bonding}: Die-to-wafer 또는 wafer-to-wafer bonding 기술로, bump 없이 직접 연결하여 trace 길이를 최소화하고 parasitic을 감소시킨다. TSMC SoIC가 대표적.
+\vspace{2mm}
 
 \textbf{FAU (Fiber Array Unit)}: 여러 optical fiber를 정밀하게 정렬하여 optical engine에 연결하는 unit. Coupling efficiency와 manufacturing yield에 중요한 영향을 미친다.
 
@@ -2645,6 +2650,19 @@ OE가 작동하려면 PIC와 EIC가 통합되어야 한다. 이 PIC--EIC 통합�
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/6500f472-56b6-4b66-826a-64bb60e09f94_1024x465.jpg}
 \caption{Source: ID TechEx}
 \end{figure}
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Parasitic과 신호 무결성}]
+
+\textbf{Parasitic}: 회로 설계 시 의도하지 않았지만 물리적 구조로 인해 필연적으로 발생하는 원치 않는 전기적 특성. Trace, via, interconnect 등의 물리적 구조에서 발생하며, 신호의 품질과 전력 효율을 저하시킨다. 거리가 멀수록, 구조가 복잡할수록 parasitic이 증가한다.
+
+\vspace{2mm}
+\textbf{Parasitic Capacitance}: 인접한 도체 사이에 의도치 않게 형성되는 capacitance. 신호 전환 시 충전/방전에 추가 전력이 소모되며, signal integrity를 저하시키고 switching speed를 늦춘다. CPO에서 PIC-EIC 간 거리가 가까울수록 parasitic capacitance가 감소한다.
+\vspace{2mm}
+
+\textbf{Trace Length (배선 길이)}: 신호가 이동하는 physical path의 길이. Trace가 길수록 parasitic capacitance, inductance, resistance가 모두 증가하여 signal integrity와 전력 효율이 저하된다. 3D integration과 hybrid bonding은 trace 길이를 최소화하여 parasitic을 감소시키는 핵심 기술이다.
+
+\end{tcolorbox}
+
 Optical engine은 PIC와 EIC를 동일한 silicon wafer에 제조함으로써 monolithic일 수 있다. 
 Monolithic integration은 parasitic, latency 및 전력 측면에서 가장 우아한 접근 방식이다. 
 이것이 Ayar Labs가 2세대 TeraPHY chiplet에 대해 취한 접근 방식이다 (하지만 그들의 next-gen chiplet은 TSMC COUPE로 pivot한다). 
@@ -2663,15 +2681,44 @@ Trace 길이를 줄이면 parasitic이 크게 감소하고 따라서 coupling ef
 
 \subsection{TSMC COUPE is emerging as the integration option of choice}
 
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Advanced Packaging 및 Silicon Photonics 기술}]
+
+\textbf{SiPho (Silicon Photonics)}: Silicon 기반 재료를 사용하여 photonic component를 제조하는 기술. 기존 CMOS 제조 인프라를 활용할 수 있어 대량 생산이 가능하며, waveguide, modulator, photodetector 등 optical component를 silicon wafer에 집적한다. SOI (Silicon-on-Insulator) wafer를 사용하여 빛의 전파와 제어를 구현한다.
+
+\vspace{2mm}
+
+\textbf{Die-to-Wafer Hybrid Bonding}: 개별 die를 전체 wafer에 직접 bonding하는 advanced packaging 기술. Micro-bump나 solder bump 없이 copper와 dielectric을 직접 접합하는 bumpless 방식으로, trace 길이를 극도로 단축하여 parasitic을 최소화한다. TSMC SoIC가 대표적이며, monolithic integration 다음으로 가장 우수한 electrical 특성을 제공한다.
+
+\vspace{2mm}
+
+\textbf{Wafer-to-Wafer Bonding}: 전체 wafer를 다른 전체 wafer에 bonding하는 방식. Die-to-wafer bonding보다 공정이 단순하지만, yield 측면에서 불리할 수 있다. 한 wafer의 defect가 bonding된 전체 wafer pair에 영향을 미치기 때문이다.
+
+\vspace{2mm}
+
+\textbf{Bump vs Bumpless}: 전통적 bump 기반 연결은 solder ball이나 copper pillar를 통해 chip을 연결하며, 수십 마이크론의 pitch를 가진다. Bumpless (hybrid bonding)는 bump 없이 직접 copper-to-copper 및 dielectric-to-dielectric bonding을 수행하며, 수 마이크론 pitch로 훨씬 높은 interconnect density와 낮은 parasitic을 달성한다. Iso-power에서 23배 이상의 bandwidth density 향상을 제공한다.
+
+\vspace{2mm}
+
+\textbf{SOI (Silicon-on-Insulator)}: Silicon layer 아래에 insulator (산화물) layer가 있는 wafer 구조. Silicon photonics에서 광신호의 confinement를 향상시켜 더 효율적인 waveguide와 optical component 제작을 가능하게 한다. TSMC COUPE는 N65 SOI node를 PIC 제조에 사용한다.
+
+\end{tcolorbox}
+\vspace{2mm}
+
 \begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: TSMC COUPE - CPO Ecosystem의 새로운 표준}]
 
 TSMC가 역사적으로 silicon photonics에서 제한적 존재감을 가졌음에도 불구하고 \textbf{COUPE (COmpact Universal Photonic Engine)}가 업계 표준으로 급부상하고 있다. 이는 세 가지 핵심 요인에 기인한다:
 
+\vspace{2mm}
 \textbf{1. 기술적 우위}: TSMC는 유일하게 합리적 scale에서 die-to-wafer hybrid bonding을 성공적으로 입증한 foundry이다. SoIC (System-on-Integrated-Chips) bumpless interface는 monolithic 통합 다음으로 가장 짧은 trace 길이를 제공하며, iso-power에서 bump 기반 통합보다 23배 이상의 bandwidth density를 달성한다.
+\vspace{2mm}
 
+\vspace{2mm}
 \textbf{2. 통합 ecosystem}: COUPE는 단순한 manufacturing process가 아닌 완전한 솔루션이다. EIC (N7 node), PIC (SOI N65 node), 3D stacking, optical I/O design, 완전한 PDK 및 EDA workflow까지 포함한다. 이는 설계자가 fragmented supply chain을 관리할 필요 없이 end-to-end 솔루션을 얻을 수 있음을 의미한다.
+\vspace{2mm}
 
+\vspace{2mm}
 \textbf{3. Vendor lock-in 효과}: COUPE를 채택하면 사실상 TSMC 제조 PIC를 사용하기로 commit하는 것이다. TSMC는 다른 foundry의 SiPho wafer를 package하지 않기 때문이다. 이는 TSMC가 value chain의 더 많은 부분을 포착할 수 있게 한다.
+\vspace{2mm}
 
 결과적으로 NVIDIA, Broadcom, Ayar Labs 등 주요 player들이 기존 solution에서 COUPE로 pivot하고 있다. 특히 Broadcom은 SPIL FOWLP 접근 방식이 parasitic capacitance로 인해 lane당 100G를 넘어 scaling할 수 없다는 것을 인식하고 COUPE로 전환했다. 이는 단순히 하나의 기술 옵션이 아닌, CPO 산업의 \textbf{de facto standard}가 되어가고 있음을 시사한다.
 
@@ -2719,7 +2766,97 @@ TSMC의 SoIC는 monolithic하지 않으면서 가능한 가장 짧은 trace 길�
 \end{figure}
 COUPE는 전체 optical engine design 및 integration process를 지원한다. optical I/O의 경우, wafer 또는 chip level에서 micro-lens의 통합을 가능하게 하는 µLens design을 지원하며, mirror, µLens, grating coupler (GC) 및 reflector를 다루는 optical I/O path simulation을 지원한다. 3D stacking의 경우, 3D floorplanning, SoIC-X/TDV/C4 bump layout implementation, interface physical checking, 그리고 high-frequency channel model extraction 및 simulation을 지원한다. seamless한 개발을 보장하기 위해 회사는 COUPE design 및 verification을 위한 완전한 PDK 및 EDA workflow를 제공하여 designer가 기술을 효율적으로 구현할 수 있도록 한다.
 
-\textbf{Coupling}: 나중에 더 자세히 설명하겠지만 두 가지 주요 coupling 방법이 있다 -- grating coupling (GC)과 edge coupling (EC). COUPE는 GC와 EC 모두에 대해 PIC bumpless stacking 구조에 하나의 공통 EIC를 사용한다. 그러나 COUPE-GC 구조는 Silicon lens (Si lens)와 MR (metal reflector)를 독특하게 사용하는 반면, COUPE-EC는 고유하게 EC facet (fiber로 EC를 종료하기 위한)를 가질 것이다. GC의 경우 Si lens는 770µm silicon carrier (Si-carrier)에 설계되고 MR은 optical 성능에 필요한 최적화 dielectric layer와 함께 GC 바로 아래에 배치된다. 그런 다음 Si-carrier는 CoW (chip-on-wafer) wafer에 WoW (wafer-on-wafer) bonding된다.
+\textbf{Coupling}: 나중에 더 자세히 설명하겠지만 두 가지 주요 coupling 방법이 있다: \textbf{Grating Coupling (GC)}과 \textbf{Edge Coupling (EC)}. 
+COUPE는 GC와 EC 모두에 대해 PIC bumpless stacking 구조에 하나의 공통 EIC를 사용한다. 그러나 COUPE-GC 구조는 Silicon lens (Si lens)와 MR (metal reflector)를 독특하게 사용하는 반면, COUPE-EC는 고유하게 EC facet (fiber로 EC를 종료하기 위한)를 가질 것이다. GC의 경우 Si lens는 770µm silicon carrier (Si-carrier)에 설계되고 MR은 optical 성능에 필요한 최적화 dielectric layer와 함께 GC 바로 아래에 배치된다. 그런 다음 Si-carrier는 CoW (chip-on-wafer) wafer에 WoW (wafer-on-wafer) bonding된다.
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Optical Coupling 방식과 구성요소}]
+
+\textbf{Grating Coupling (GC)}: Optical fiber와 PIC 사이에서 빛을 수직 방향으로 결합하는 방식. Waveguide 표면에 주기적인 grating 구조를 만들어 빛의 방향을 90도 전환한다. Wafer level testing이 용이하고 정렬 tolerance가 높아 manufacturing이 상대적으로 쉽지만, edge coupling 대비 coupling efficiency가 낮고 wavelength dependency가 크다. TSMC COUPE-GC는 silicon lens와 metal reflector를 사용하여 efficiency를 향상시킨다.
+
+\vspace{2mm}
+
+\textbf{Edge Coupling (EC)}: Optical fiber와 PIC를 chip의 edge에서 수평 방향으로 직접 결합하는 방식. Fiber와 waveguide의 mode profile을 matching시켜 빛을 전달한다. Grating coupling 대비 높은 coupling efficiency (일반적으로 1-2 dB loss)와 넓은 wavelength range를 제공하지만, sub-micron 수준의 정밀한 alignment가 필요하고 wafer level testing이 어렵다. High-performance application에서 선호된다.
+
+\vspace{2mm}
+
+\textbf{Silicon Lens (Si lens)}: Grating coupling에서 빛을 집속(focusing)시키는 silicon 재질의 micro-lens. COUPE-GC에서는 770µm silicon carrier에 설계되어, fiber에서 나오는 빛을 grating coupler로 효율적으로 전달하거나 그 역 방향으로 빛을 집속시킨다. Silicon의 높은 refractive index를 활용하여 compact한 크기로 효과적인 focusing을 구현한다.
+
+\vspace{2mm}
+
+\textbf{Metal Reflector (MR)}: Grating coupler 아래에 배치되는 금속 반사층. Grating에서 아래쪽으로 회절된 빛을 위쪽으로 반사시켜 fiber 방향으로 보냄으로써 coupling efficiency를 크게 향상시킨다. 최적화된 dielectric layer와 함께 사용되어 optical 성능을 극대화한다. MR 없이는 빛의 상당 부분이 substrate로 손실된다.
+
+\vspace{2mm}
+
+\textbf{EC Facet}: Edge coupling을 위해 chip의 edge를 정밀하게 가공한 평면. Optical fiber를 직접 연결하기 위해 매우 매끄럽고 수직인 표면이 필요하다. Dicing이나 cleaving을 통해 제작되며, surface roughness와 verticality가 coupling efficiency에 직접적인 영향을 미친다. COUPE-EC는 이러한 고품질 facet을 제공한다.
+
+\vspace{2mm}
+
+\textbf{Coupling Efficiency}: Optical fiber와 PIC 사이에서 전달되는 빛의 비율. Mode mismatch, alignment error, surface quality 등에 의해 손실이 발생한다. 일반적으로 dB 단위로 표현되며, 낮을수록 좋다 (예: 1 dB loss = 79\% efficiency). CPO 시스템에서는 수십 개의 channel이 있으므로 각 channel의 coupling efficiency가 전체 시스템 성능에 중요하다.
+
+\vspace{2mm}
+
+\textbf{CoW (Chip-on-Wafer)}: 개별 die (chip)를 전체 wafer에 bonding하는 공정. Known-good die만 선택하여 bonding할 수 있어 yield가 향상된다. COUPE에서 Si-carrier를 PIC/EIC stack에 bonding할 때 사용된다.
+
+\vspace{2mm}
+
+\textbf{WoW (Wafer-on-Wafer)}: 전체 wafer를 다른 전체 wafer에 bonding하는 공정. Die-to-wafer보다 throughput이 높지만, 한 wafer의 defect가 전체 bonding pair에 영향을 주므로 두 wafer 모두 높은 yield를 가져야 경제적이다.
+
+\vspace{2mm}
+
+\textbf{Insertion Loss}: Optical signal이 component나 interface를 통과할 때 발생하는 power 손실. Coupling, connector, waveguide 등 각 단계에서 발생하며, dB 단위로 측정된다. CPO 시스템에서는 FAU, coupling interface 등 여러 단계의 insertion loss를 최소화하는 것이 중요하다. 높은 insertion loss는 signal quality 저하와 power penalty를 초래한다.
+
+\end{tcolorbox}
+
+\vspace{2mm}
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: Optical Coupling - Fiber와 Chip을 연결하는 핵심 기술}]
+
+\textbf{Coupling의 개념}
+
+CPO 시스템에서 "coupling"은 optical fiber (빛이 장거리를 이동하는 매체)와 PIC의 waveguide (chip 내에서 빛이 이동하는 경로)를 광학적으로 연결하는 과정을 의미한다. 이는 전기 신호에서 connector나 PCB trace가 칩을 연결하는 것과 유사하지만, 빛의 파동 특성 때문에 훨씬 더 정밀하고 복잡하다. Fiber의 mode (빛의 분포 패턴)와 waveguide의 mode가 다르기 때문에, 이 변환 과정에서 불가피하게 일부 빛이 손실된다. CPO의 성능과 신뢰성은 이 coupling이 얼마나 효율적으로 이루어지는지에 크게 좌우된다.
+
+\vspace{2mm}
+
+
+
+
+\textbf{Grating Coupling (GC) 동작 과정}
+
+\begin{enumerate}
+\item \textbf{광신호 입력}: Optical fiber에서 나온 빛이 FAU (Fiber Array Unit)를 통해 정렬되어 Si lens로 입사된다.
+
+\item \textbf{집속 (Focusing)}: 770µm silicon carrier에 형성된 Si lens가 diverging하는 빛을 focusing하여 grating coupler로 집중시킨다. Silicon의 높은 refractive index (약 3.5)를 활용하여 compact한 크기로 강력한 focusing을 달성한다.
+
+\item \textbf{방향 전환 및 mode 변환}: Grating coupler (주기적 구조를 가진 waveguide 표면)가 수직으로 입사된 빛을 수평 방향으로 회절시키면서 동시에 fiber mode를 waveguide mode로 변환한다. 이 과정에서 일부 빛은 위아래로 분산된다.
+
+\item \textbf{반사를 통한 효율 향상}: Grating 아래에 배치된 Metal Reflector (MR)가 아래쪽으로 회절된 빛을 다시 위로 반사시켜 waveguide로 보낸다. 최적화된 dielectric layer가 interference pattern을 조절하여 efficiency를 극대화한다. MR 없이는 30-50\%의 빛이 substrate로 손실될 수 있다.
+
+\item \textbf{Waveguide 전달}: 변환된 빛이 PIC의 silicon waveguide를 통해 modulator나 photodetector 등 optical component로 전달된다.
+
+\item \textbf{조립}: Si-carrier는 CoW 방식으로 PIC/EIC stack에 배치된 후, WoW bonding으로 최종 고정된다.
+\end{enumerate}
+
+\textbf{GC의 장점}: Wafer 표면 어디서든 접근 가능, wafer-level testing 용이, alignment tolerance 높음 (수 마이크론), 대량 생산에 유리. \textbf{단점}: 일반적으로 3-5 dB insertion loss, wavelength에 민감 (약 40nm bandwidth), polarization dependent.
+
+\vspace{2mm}
+
+\textbf{Edge Coupling (EC) 동작 과정}
+
+\begin{enumerate}
+\item \textbf{광신호 입력}: Optical fiber가 chip의 edge에 정밀하게 정렬된다. Sub-micron (1 마이크론 미만) 수준의 alignment 정확도가 필요하다.
+
+\item \textbf{직접 mode 변환}: Fiber에서 나온 빛이 EC facet (정밀 연마된 chip edge)를 통해 waveguide로 직접 입사된다. Spot size converter (점진적으로 폭이 변하는 waveguide 구조)가 fiber의 큰 mode (약 10 µm)를 waveguide의 작은 mode (약 0.5 µm)로 단열적(adiabatic)으로 변환한다.
+
+\item \textbf{Waveguide 전달}: 변환된 빛이 바로 PIC의 waveguide를 통해 optical component로 전달된다.
+\end{enumerate}
+
+\textbf{EC의 장점}: 낮은 insertion loss (일반적으로 1-2 dB), 넓은 wavelength range (100nm 이상), polarization 제어 가능. \textbf{단점}: Sub-micron alignment 필요, wafer-level testing 불가, facet quality에 민감, chip edge에만 배치 가능하여 I/O density 제한.
+
+\end{tcolorbox}
+
+
+
+
 
 \begin{figure}[H]
 \centering
@@ -2743,12 +2880,105 @@ Interposer는 훨씬 더 많은 I/O density를 제공하므로 OE와 ASIC PHY �
 개별 OE가 각각 최대 12.8Tbit/s의 bandwidth를 가질 가능성이 있어 약 4 Tbit/s/mm로 환산된다. 
 Interposer를 통합하는 데 있어 과제는 OE를 수용하기 위해 interposer 크기 (package substrate보다 비쌈)를 확장하는 것이다.
 
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Advanced Packaging 기술 - FOWLP와 TMV}]
+
+\textbf{FOWLP (Fan-Out Wafer-Level Packaging)}: Die를 재배치하여 원래 wafer 크기보다 더 큰 I/O area를 제공하는 advanced packaging 기술. Die들을 temporary carrier에 face-down으로 배치한 후 epoxy mold compound로 encapsulation하고, RDL (Redistribution Layer)을 형성하여 I/O를 "fan-out" (확장)시킨다. 전통적인 substrate나 interposer 없이 wafer-level에서 처리할 수 있어 cost-effective하지만, vertical interconnect 길이가 길어져 high-speed application에서 한계가 있다.
+
+\vspace{2mm}
+
+\textbf{RDL (Redistribution Layer)}: FOWLP에서 die의 I/O pad를 재배치하여 더 넓은 영역으로 확장하는 금속 배선층. 일반적으로 copper와 dielectric layer로 구성되며, fine-pitch die pad를 coarser-pitch BGA (Ball Grid Array)로 연결한다. Multiple RDL layer를 사용하여 복잡한 routing을 구현할 수 있다.
+
+\vspace{2mm}
+
+\textbf{TMV (Through-Mold Via)}: FOWLP에서 mold compound를 관통하여 die와 RDL을 수직으로 연결하는 via. Copper로 채워지며, die의 top surface에서 RDL로 signal을 전달한다. TMV는 일반적으로 수십에서 수백 마이크론의 길이를 가지며, 이는 다음과 같은 문제를 야기한다:
+
+\begin{itemize}
+\item \textbf{Parasitic Capacitance}: TMV의 긴 길이와 mold compound와의 interface가 상당한 parasitic capacitance를 생성한다. Via 길이가 길수록, via와 주변 mold/RDL 사이의 capacitance가 증가한다.
+
+\item \textbf{Scalability 한계}: 이러한 parasitic 요소로 lane당 100Gbps를 넘어서는 고속 신호 전송을 어렵게 만든다. Signal이 EIC에서 PIC로 (또는 그 반대로) 전달될 때 TMV를 통과해야 하므로, 각 lane마다 이 parasitic penalty를 겪는다.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{FOWLP vs Hybrid Bonding (COUPE)}: 
+
+\begin{itemize}
+\item \textbf{Interconnect 길이}: FOWLP의 TMV는 수십-수백 µm인 반면, hybrid bonding은 수 µm 이하로 10-100배 짧다.
+
+\item \textbf{Parasitic}: FOWLP는 TMV와 RDL routing으로 인해 높은 parasitic을 가지며, COUPE의 bumpless hybrid bonding은 극도로 낮은 parasitic을 제공한다.
+
+\item \textbf{Bandwidth Density}: Hybrid bonding은 micro-bump pitch (약 40 µm)보다 훨씬 조밀한 pitch (수 µm)를 달성하여 iso-power에서 23배 이상의 bandwidth density를 제공한다.
+
+\item \textbf{Lane Speed Scalability}: FOWLP는 parasitic 제약으로 lane당 약 100Gbps에서 한계에 도달하지만, COUPE는 200Gbps 이상으로 확장 가능하다.
+
+\item \textbf{Cost}: FOWLP는 초기에는 더 cost-effective하지만, 성능 제약으로 인해 high-end CPO application에서는 경쟁력을 잃는다.
+\end{itemize}
+
+\end{tcolorbox}
+
 이것이 Broadcom이 SPIL에 의해 개발된 \textbf{Fan-Out Wafer-Level Packaging (FOWLP)} 접근 방식을 사용하여 여러 세대의 CPO를 iterate했음에도 불구하고 CPO 솔루션을 위해 TSMC COUPE로 전환하고 있는 이유이다. 
 특히 Broadcom은 미래 switch 및 customer accelerator roadmap을 위해 COUPE에 commit했다. 
 우리가 이해하기로는 FOWLP 접근 방식은 과도한 parasitic capacitance로 인해 lane당 100G를 넘어 scaling할 수 없는데, 
 electrical signal이 EIC에 도달하기 위해 \textbf{Through-Mold Via (TMV)}를 통과해야 하기 때문이다. 
 경쟁력 있는 roadmap을 유지하기 위해 Broadcom은 우수한 성능과 scalability를 제공하는 COUPE로 전환해야 한다. 
 이는 TSMC의 기술적 우위를 강조하며, 역사적으로 더 약하다고 여겨졌던 optics domain에서도 승리를 확보할 수 있게 한다.
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: FOWLP의 100Gbps Scaling 한계 - TMV Parasitic의 물리적 제약}]
+
+\textbf{문제의 근본 원인: TMV의 구조적 한계}
+
+FOWLP 기반 CPO에서 optical signal과 electrical signal 간 변환은 다음 경로를 거친다:
+
+\begin{enumerate}
+\item PIC에서 photodetector가 optical signal을 electrical signal로 변환 (또는 modulator가 그 역을 수행)
+\item Electrical signal이 PIC에서 RDL로 이동하기 위해 \textbf{TMV를 수직으로 통과} (수십-수백 µm)
+\item RDL을 통해 horizontal routing (추가 parasitic)
+\item 다시 TMV를 통해 EIC (Driver 또는 TIA)로 전달
+\end{enumerate}
+
+이 architecture에서 TMV는 불가피한 bottleneck이 된다.
+
+\vspace{2mm}
+
+\textbf{TMV Parasitic이 고속 신호에 미치는 영향}
+
+\textbf{1. Parasitic Capacitance의 영향}:
+\begin{itemize}
+\item TMV는 cylindrical conductor로, via와 주변 mold compound 및 ground plane 사이에 capacitance가 형성된다.
+\item 일반적인 TMV (직경 40-60 µm, 길이 100-200 µm)의 parasitic capacitance는 약 50-100 fF (femtofarad) 수준이다.
+\item 이 capacitance는 RC time constant를 증가시켜 signal rise/fall time을 늦춘다: \(\tau = RC\)
+\item 100Gbps에서 bit period는 10 ps (picosecond)이다. Parasitic이 크면 signal이 한 bit period 내에 완전히 switching되지 못한다.
+\end{itemize}
+
+\textbf{2. Power Consumption 증가}:
+\begin{itemize}
+\item High-speed switching에서 power는 주로 capacitance 충전/방전에 소모된다: \(P = C \cdot V^2 \cdot f\)
+\item Parasitic capacitance가 크면 동일한 data rate에서 더 많은 power가 필요하다.
+\item Lane당 100Gbps를 넘어서면, TMV parasitic을 driving하는 데 필요한 power가 급격히 증가하여 CPO의 energy efficiency 목표를 달성할 수 없다.
+\end{itemize}
+
+\textbf{3. Signal Integrity 저하}:
+\begin{itemize}
+\item TMV의 parasitic inductance와 capacitance가 결합되어 resonance를 형성하고 signal ringing을 유발한다.
+\item 긴 TMV path는 impedance mismatch를 일으켜 reflection을 증가시킨다.
+\item 200Gbps 이상의 속도에서는 eye diagram이 닫혀 reliable한 data detection이 불가능해진다.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{COUPE Hybrid Bonding의 해결책}
+
+TSMC COUPE는 이 문제를 근본적으로 해결한다:
+\begin{itemize}
+\item \textbf{극도로 짧은 interconnect}: Hybrid bonding은 수 µm 길이로 TMV 대비 10-100배 짧다.
+\item \textbf{Parasitic 감소}: 짧은 길이와 작은 pitch로 parasitic capacitance가 수 fF 수준으로 감소한다.
+\item \textbf{Bandwidth density}: Bumpless interface가 높은 interconnect density를 제공하여 병렬 lane 수를 늘릴 수 있다.
+\item \textbf{Lane speed scalability}: 낮은 parasitic으로 lane당 200Gbps 이상으로 확장 가능하다.
+\end{itemize}
+
+이것이 Broadcom이 SPIL FOWLP에서 검증된 supply chain을 가지고 있음에도 불구하고, 미래 roadmap을 위해 TSMC COUPE로 전환을 결정한 핵심 이유이다. 단순한 incremental improvement가 아닌, 근본적인 physical limitation을 극복하기 위한 architecture 전환이다.
+
+\end{tcolorbox}
 
 \begin{figure}[H]
 \centering
@@ -2762,6 +2992,7 @@ electrical signal이 EIC에 도달하기 위해 \textbf{Through-Mold Via (TMV)}�
 \end{figure}
 
 \subsection{Packaging the OEs with the host}
+
 OE 자체는 substrate에 배치되며, 그 후 substrate는 host package에 flip-chip bonding된다. 
 OE를 co-packaging하기 위해서는 많은 package 면적이 필요하다. 
 이는 배치되는 위치에 따라 package substrate 또는 interposer를 상당히 확대해야 함을 필요로 한다.
@@ -2770,29 +3001,91 @@ NVIDIA의 Spectrum-X Photonics switch ASIC package의 경우 substrate는 110mm 
 
 추가로 substrate에 더 많은 element를 부착하는 것은 yield 과제를 제시한다. 
 다시 Spectrum-X의 경우 36개의 known good OE가 먼저 substrate에 flip-chip bonding되어야 한다. 
-CoWoS assembly를 완료하기 위한 'on Substrate' 단계를 위해 interposer module을 bonding하기 전에.
+CoWoS assembly를 완료하기 위한 \textbf{on Substrate} 단계를 위해 interposer module을 bonding하기 전에.
 
 마찬가지로 interposer의 경우 훨씬 더 큰 interposer를 제조해야 하는 필요성은 비용이 많이 들며 훨씬 더 많은 element를 bonding해야 하므로 yield 과제를 제시한다. 
-추가로 이러한 과제는 interposer/substrate 크기가 확장됨에 따라 더욱 두드러지는 warpage 문제로 인해 악화된다.
+추가로 이러한 과제는 \textbf{interposer/substrate 크기가 확장됨에 따라 더욱 두드러지는 warpage 문제로 인해 악화된다.}
+
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Chip Bonding 기술의 이해}]
+
+  \textbf{Flip-Chip Bonding}: Chip을 face-down (활성면이 아래를 향함) 방식으로 substrate나 interposer에 직접 연결하는 packaging 기술. Chip의 I/O pad에 형성된 bump (돌기)를 통해 전기적 연결과 기계적 고정을 동시에 달성한다. "Flip"이라는 이름은 chip이 뒤집혀서 활성면이 substrate를 향하는 것에서 유래한다. 전통적인 wire bonding 대비 짧은 interconnect 길이, 높은 I/O density, 우수한 전기적 성능을 제공한다.
+  
+  \vspace{2mm}
+  
+  \textbf{Wire Bonding vs Flip-Chip Bonding}:
+  
+  \begin{itemize}
+  \item \textbf{Wire Bonding}: Chip을 face-up으로 배치하고 얇은 금속 wire (보통 gold 또는 aluminum)를 사용하여 chip pad와 substrate를 연결. 성숙한 기술이고 저렴하지만, wire 길이가 수 mm로 길어 parasitic inductance가 크고, I/O density가 제한적이며, high-speed application에 부적합하다.
+  
+  \item \textbf{Flip-Chip Bonding}: Wire가 필요 없고, bump를 통한 직접 연결로 interconnect 길이가 수십-수백 µm로 짧아 parasitic이 훨씬 낮다. 높은 I/O density (수천 개 이상의 connection 가능), 양면 cooling 가능, 우수한 전기적/thermal 성능을 제공한다.
+  \end{itemize}
+  
+  \textbf{Bump 종류}:
+  
+  \begin{itemize}
+  \item \textbf{Solder Bump}: 전통적인 방식으로 lead-tin 또는 lead-free solder (예: SnAg, SAC)로 형성된 bump. Reflow process로 melting되어 bonding을 형성한다. Pitch는 일반적으로 150-200 µm이다.
+  
+  \item \textbf{Copper Pillar}: Copper pillar에 thin solder cap을 가진 구조. Solder bump보다 높은 aspect ratio를 가져 finer pitch (40-100 µm) 달성이 가능하고, electromigration resistance가 우수하며, thermal/electrical performance가 더 좋다. Advanced packaging에서 주로 사용된다.
+  
+  \item \textbf{Micro-bump}: Advanced 3D packaging (예: die stacking)에서 사용되는 매우 작은 bump. Pitch가 20-40 µm로 매우 조밀하며, copper pillar 기반이 일반적이다.
+  \end{itemize}
+  
+  \textbf{Flip-Chip vs Hybrid Bonding}:
+  
+  \begin{itemize}
+  \item \textbf{Flip-Chip (Bump 기반)}: Bump를 통한 연결로 pitch가 20-200 µm 범위. Bump height만큼 gap이 존재하며 underfill material로 채운다. Parasitic은 hybrid bonding보다 크지만 wire bonding보다는 훨씬 낮다.
+  
+  \item \textbf{Hybrid Bonding (Bumpless)}: Bump 없이 copper-to-copper와 dielectric-to-dielectric을 직접 bonding. Pitch가 수 µm로 극도로 조밀하고, parasitic이 최소화되며, iso-power에서 23배 이상의 bandwidth density를 제공한다. 하지만 공정이 복잡하고 비용이 높다.
+  \end{itemize}
+  
+  \vspace{2mm}
+  
+  \textbf{CPO에서의 역할}: CPO 시스템에서 optical engine (OE)은 일반적으로 substrate나 interposer에 flip-chip bonding으로 부착된다. 이는 OE와 substrate 사이에 수천 개의 electrical connection (power, ground, control signal 등)을 제공한다. 그 후 substrate가 host ASIC package에 다시 flip-chip bonding된다. 한편, OE 내부의 PIC-EIC 간 연결은 더 높은 성능을 위해 hybrid bonding (TSMC SoIC)을 사용한다.
+  
+  \end{tcolorbox}
+
 
 \subsection{FAUs and Fiber Coupling}
 
-\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Fiber Coupling 방식의 이해}]
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Fiber Coupling과 Waveguide 기초}]
 
-\textbf{Edge Coupling (EC)}: Fiber를 chip의 edge를 따라 정렬하는 방식. Fiber 끝의 microlens가 빛을 chip으로 집중시키고, waveguide taper가 점진적으로 넓어져 smooth mode transition을 제공한다. 낮은 coupling loss (<1dB), 광범위한 wavelength 지원, polarization insensitivity의 장점을 가지지만, 1D 구조로 fiber density가 제한되고 die stacking과 호환되지 않는다.
+\textbf{Optical Fiber}: 빛을 장거리로 전송하는 얇고 유연한 유리 또는 plastic 가닥. Core (빛이 전파되는 중심부)와 cladding (빛을 core에 가두는 외부층)으로 구성된다. Total internal reflection 원리를 이용하여 빛이 fiber 내부에 갇혀 전송된다. Single-mode fiber (코어 직경 약 9 µm)는 하나의 광학 mode만 전파하여 장거리 고속 통신에 사용되고, multi-mode fiber (코어 직경 50-62.5 µm)는 여러 mode를 전파하여 단거리 통신에 사용된다.
 
-\textbf{Grating Coupling (GC)}: 빛이 위에서 들어오고 주기적 grating 구조가 빛을 아래로 scatter하여 waveguide로 유도하는 방식. 2D density 가능, 더 작은 footprint, 간단한 제조, interposer 배치 가능의 장점을 가지지만, 더 높은 optical loss (3-5dB)와 더 좁은 optical bandwidth를 가진다. NVIDIA와 TSMC가 선호하는 방식.
+\vspace{2mm}
 
-\textbf{Fiber Pitch}: Fiber 간의 간격. 현재 최소 pitch는 127µm (mm당 최대 8개 fiber)이며, 업계는 80µm pitch와 multicore fiber를 향해 발전 중이다.
+\textbf{Waveguide}: Chip 내부에서 빛을 전송하는 구조물. Silicon photonics에서는 silicon을 core로, silicon dioxide (SiO₂)를 cladding으로 사용하여 waveguide를 형성한다. Silicon의 높은 refractive index (약 3.5)와 SiO₂의 낮은 refractive index (약 1.45) 차이로 빛을 silicon 영역에 confine한다. 일반적으로 폭이 0.3-0.5 µm, 높이가 0.2-0.3 µm인 매우 작은 구조로, optical fiber보다 훨씬 compact하다.
 
-\textbf{Insertion Loss}: Optical signal이 fiber에서 waveguide로 coupling될 때 발생하는 power loss. EC는 일반적으로 <1dB, GC는 3-5dB의 insertion loss를 가진다.
+\vspace{2mm}
 
-\textbf{Waveguide Taper}: EC에서 사용되는 점진적으로 넓어지는 waveguide 구조. Reflection과 scattering을 줄여 coupling efficiency를 향상시킨다.
+\textbf{Optical Mode}: Waveguide나 fiber 내에서 전파되는 빛의 electric field 분포 패턴. 각 mode는 특정한 spatial distribution과 propagation constant를 가진다. Mode의 크기와 형태는 waveguide/fiber의 geometry와 refractive index profile에 의해 결정된다. Single-mode waveguide는 하나의 fundamental mode만 지원하고, multi-mode는 여러 higher-order mode를 지원한다. Coupling 과정에서 fiber mode (큰 size)와 waveguide mode (작은 size) 간 mismatch가 주요 손실 원인이다.
+
+\vspace{2mm}
+
+\textbf{Fiber Coupling}: Optical fiber와 on-chip waveguide 사이에서 빛을 효율적으로 전달하는 과정. 두 구조 간 mode size mismatch (fiber: 약 10 µm, waveguide: 약 0.5 µm), numerical aperture 차이, alignment error 등으로 인해 불가피하게 일부 빛이 손실된다. 정밀한 alignment (sub-micron 수준)와 mode matching 구조 (lens, taper, grating)가 필요하다. CPO 시스템에서는 수십-수백 개의 fiber를 동시에 coupling해야 하므로, manufacturing yield와 reliability가 중요한 과제이다.
+
+\vspace{2mm}
+
+\textbf{FAU (Fiber Array Unit)}: 여러 optical fiber를 정밀하게 정렬하여 하나의 array로 만든 unit. Fiber들을 정확한 pitch (간격)로 고정하고, OE의 waveguide array와 정렬할 수 있도록 한다. V-groove array나 fiber holder를 사용하여 fiber의 위치를 고정하며, active alignment (빛을 통과시키면서 최적 위치 찾기) 또는 passive alignment (mechanical feature로 정렬) 방식으로 OE에 부착된다.
+
+\vspace{2mm}
+
+\textbf{Fiber Pitch}: Fiber 간의 중심 간 거리. 현재 표준은 127 µm (mm당 최대 8개 fiber)이며, 업계는 더 높은 fiber density를 위해 80 µm pitch를 개발 중이다. 또한 multicore fiber (하나의 fiber에 여러 core)를 통해 effective density를 더욱 증가시키는 연구가 진행 중이다. Pitch가 작을수록 동일한 area에서 더 많은 I/O를 달성할 수 있어 CPO의 bandwidth density가 향상된다.
+
+\vspace{2mm}
+
+\textbf{Waveguide Taper}: Waveguide의 폭이 점진적으로 변하는 구조. Edge coupling에서 fiber의 큰 mode size를 chip waveguide의 작은 mode size로 adiabatic하게 변환하는 데 사용된다. 급격한 크기 변화는 reflection과 scattering을 유발하지만, 점진적인 taper (일반적으로 수백 µm 길이)는 손실을 최소화하며 mode 변환을 수행한다. 잘 설계된 taper는 coupling efficiency를 크게 향상시킨다.
+
+\vspace{2mm}
+
+\textbf{Refractive Index}: 빛이 물질을 통과하는 속도를 나타내는 무차원 수. 진공에서 빛의 속도를 물질 내에서의 속도로 나눈 값이다. Silicon의 refractive index는 약 3.5, SiO₂는 약 1.45로, 이 차이가 waveguide에서 빛을 confine하는 원리가 된다. Refractive index 차이가 클수록 더 tight한 confinement가 가능하여 더 작고 compact한 waveguide를 만들 수 있다.
 
 \end{tcolorbox}
 
 Fiber는 데이터를 전송하기 위해 OE에서 나온다. 하나의 optical lane은 2개의 fiber 또는 하나의 fiber pair (transmit plus receive)로 구성된다. 
 \textbf{Fiber coupling} (원활하고 효율적인 빛 전송을 위해 fiber를 on-chip waveguide와 정밀하게 정렬하는 것)은 CPO에서 중요하고 도전적인 단계이며, 
+\vspace{2mm}
+
 \textbf{Fiber Array Unit (FAU)}는 그 과정을 지원하기 위해 CPO에서 널리 사용된다. 
 이를 수행하는 두 가지 주요 방법이 있는데, 즉 \textbf{Edge Coupling (EC)}과 \textbf{Grating Coupling (GC)}이다.
 
@@ -2811,19 +3104,114 @@ Waveguide taper는 점진적으로 넓어져 reflection과 scattering을 줄여 
 Edge coupling은 낮은 coupling loss, 광범위한 wavelength와 작동하는 능력, 그리고 polarization insensitivity로 인해 선호된다. 그러나 다음의 몇 가지 단점도 있다:
 
 \begin{enumerate}
-  \item Fabrication process가 더 복잡하며 undercut과 deep etching이 필요하다;
+  \item Fabrication process가 더 복잡하며 undercut과 deep etching이 필요하다.
 
-  \item 1D 구조이기 때문에 fiber density가 제한될 수 있다;
+  \item 1D 구조이기 때문에 fiber density가 제한될 수 있다.
 
-  \item Die stacking과 호환되지 않는다 (TSV가 thinning을 필요로 하기 때문에);
+  \item Die stacking과 호환되지 않는다. (TSV가 thinning을 필요로 하기 때문에)
 
-  \item Form factor의 mechanics reliability, mechanical stress, warpage 및 fiber handling에 대한 과제가 있다;
+  \item Form factor의 mechanics reliability, mechanical stress, warpage 및 fiber handling에 대한 과제가 있다.
 
-  \item 더 낮은 thermal reliability를 제공한다; 그리고
+  \item 더 낮은 thermal reliability를 제공한다.
 
   \item 일반적으로 ecosystem compatibility의 부족이 있다.
 
 \end{enumerate}
+
+
+
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: Edge Coupling의 기술적 한계와 제약}]
+
+\textbf{1. Fabrication 복잡성: Undercut과 Deep Etching}
+
+Edge coupling을 위해서는 chip edge에 고품질의 optical facet이 필요하다. 이를 달성하기 위한 fabrication 과정은 매우 까다롭다:
+
+\begin{itemize}
+\item \textbf{Undercut}: Mask 아래의 재료가 lateral 방향으로 식각되는 현상. Edge coupler를 만들 때 waveguide facet을 노출시키기 위해 의도적으로 사용되지만, 제어하기 어렵다. Isotropic etching에서 자주 발생하며, 과도한 undercut은 구조적 불안정성을 초래한다.
+
+\item \textbf{Deep Etching}: Waveguide를 완전히 노출시키기 위해 수 마이크론 이상의 깊이로 수직 식각하는 공정. Reactive Ion Etching (RIE)이나 Deep Reactive Ion Etching (DRIE) 같은 anisotropic etching 기술이 필요하다. Sidewall roughness, etch angle 제어, aspect ratio dependent etching (ARDE) 등의 과제가 있으며, 이는 optical loss에 직접 영향을 미친다.
+
+\item \textbf{Facet Quality}: Edge coupling의 efficiency는 facet의 smoothness와 verticality에 극도로 민감하다. Surface roughness가 수십 nm만 되어도 scattering loss가 크게 증가한다. Polishing이나 cleaving으로 facet quality를 개선할 수 있지만, 이는 추가 공정 단계를 요구한다.
+\end{itemize}
+
+이에 비해 grating coupling은 간단한 two-step etched process로 제조 가능하여 fabrication이 훨씬 용이하다.
+
+\vspace{2mm}
+
+\textbf{2. 1D 구조의 Fiber Density 제한}
+
+Edge coupling은 본질적으로 \textbf{1차원(1D) 구조}이다:
+
+\begin{itemize}
+\item \textbf{제약}: Fiber는 chip의 edge를 따라 일렬로만 배치될 수 있다. 즉, chip의 perimeter (둘레)만 사용 가능하다.
+
+\item \textbf{Density 계산}: Chip edge 길이가 L mm이고 fiber pitch가 127 µm라면, 최대 fiber 수는 약 L/0.127 개이다. 예를 들어, 10mm edge에는 약 79개 fiber만 배치 가능하다.
+
+\item \textbf{Corner 문제}: Chip의 모서리(corner)에서는 fiber routing이 어려워 실제 사용 가능한 edge 길이는 더 짧아진다.
+
+\item \textbf{Bidirectional 고려}: 각 fiber pair (Tx + Rx)는 2개의 위치를 차지하므로, 실제 optical lane 수는 fiber 수의 절반이다.
+\end{itemize}
+
+
+\vspace{2mm}
+
+\textbf{4. Die Stacking 비호환성 - 근본적인 구조적 충돌}
+
+먼저 핵심 개념들을 이해해보자:
+
+\begin{itemize}
+\item \textbf{Edge Coupling}: Fiber가 chip의 \textbf{옆면(edge)}에서 수평으로 들어간다. 마치 책의 옆면에서 무언가를 꽂는 것과 같다.
+
+\item \textbf{Die Stacking}: 여러 개의 die를 레고 블록처럼 \textbf{위로 쌓는} 것이다. 
+
+\item \textbf{TSV (Through-Silicon Via)}: 쌓인 die들을 전기적으로 연결하기 위해 die를 \textbf{수직으로 관통}하는 전선이다.
+
+\item \textbf{Wafer Thinning}: Die를 쌓기 전에 각 die를 sandpaper로 갈듯이 뒷면을 \textbf{얇게 깎아내는} 공정이다 (약 775 µm → 50 µm 이하). 여러 층을 쌓아도 전체 높이가 너무 높아지지 않도록 하기 위함이다.
+\end{itemize}
+
+\textbf{왜 호환되지 않는가? - 간단한 비유}
+
+책 3권을 쌓는다고 상상해보자:
+\begin{enumerate}
+\item \textbf{1층 책}: 책의 옆면(edge)에 fiber를 연결했다.
+\item \textbf{2층 책을 올림}: 이제 1층 책의 옆면이 2층 책에 가려진다! Fiber를 연결할 수 없다.
+\item \textbf{3층 책을 올림}: 2층 책의 옆면도 가려진다!
+\item \textbf{결과}: 맨 위층 책의 옆면만 접근 가능하다. 나머지는 전부 가려진다.
+\end{enumerate}
+\vspace{2mm}
+
+\textbf{5. Thinning이 추가로 만드는 문제}
+
+Die stacking을 위해 wafer를 얇게 깎을 때 추가 문제가 발생한다:
+
+\begin{itemize}
+\item \textbf{Edge 손상}: Edge coupler는 chip 옆면의 매끈하고 정확한 표면(facet)에 의존한다. Backside를 sandpaper로 가는 것처럼 갈아내면, 그 mechanical stress와 진동이 chip 전체로 전달되어 edge 근처의 섬세한 waveguide 구조를 손상시킬 수 있다.
+
+\item \textbf{얇은 chip은 깨지기 쉬움}: 50 µm로 얇아진 chip은 종이처럼 약하다. 취급 중에 edge가 쉽게 깨지거나 부스러질(chipping) 수 있다. Edge coupler는 손상된 edge에서는 작동하지 않는다.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{반면 Grating Coupling은 왜 문제없나?}
+
+Grating coupling은 완전히 다른 구조이다:
+\begin{itemize}
+\item \textbf{Fiber가 위에서 들어온다}: 책의 옆면이 아니라 \textbf{표지(top surface)}를 통해 빛이 수직으로 들어온다.
+
+\item \textbf{Die를 쌓아도 OK}: 책 3권을 쌓아도 각 책의 표지는 여전히 위를 향한다. 모든 층의 grating에 위에서 접근 가능하다.
+
+\item \textbf{Thinning도 OK}: Backside (뒷면)를 깎지만, grating은 front side (앞면) 표면에 있으므로 전혀 영향받지 않는다.
+
+\item \textbf{결론}: 3D integration과 완벽하게 호환된다.
+\end{itemize}
+
+\vspace{2mm}
+
+\end{tcolorbox}
+
+
+
 \textbf{Global Foundries (GFS)}는 올해 VLSI conference에서 signature 45nm Fotonix platform에서 32 channel과 127µm-pitch를 가능하게 하는 monolithically integrated SiN edge coupler를 시연했다.
 
 \subsubsection{Grating Coupling (GC)}
@@ -2850,17 +3238,30 @@ TSMC도 COUPE platform에서 지원되는 GC에 대한 더 높은 선호도를 �
 
 \begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Laser와 Wavelength Multiplexing}]
 
-\textbf{ELS (External Light Source)}: Laser가 fiber를 통해 optical engine에 연결된 별도의 module에 위치하는 방식. 주로 OSFP와 같은 pluggable form factor 사용. Field servicing이 간단하지만 connector loss, fiber coupling loss, modulator inefficiency로 인해 높은 전력 소비 (laser와 TEC가 전력의 ~70% 차지).
+\textbf{ELS (External Light Source)}: Laser가 fiber를 통해 optical engine에 연결된 별도의 module에 위치하는 방식. 
+주로 OSFP와 같은 pluggable form factor 사용. 
+Field servicing이 간단하지만 connector loss, fiber coupling loss, modulator inefficiency로 인해 높은 전력 소비 (laser와 TEC가 전력의 ~70\% 차지).
+\vspace{2mm}
 
 \textbf{CWDM (Coarse Wavelength Division Multiplexing)}: 일반적으로 20nm spacing으로 더 적은 channel을 전달하는 방식. Wider spacing으로 capacity가 제한됨.
 
+\vspace{2mm}
+
 \textbf{DWDM (Dense Wavelength Division Multiplexing)}: 매우 tight spacing (종종 <1nm)으로 많은 lane을 pack하는 방식. 40, 80 또는 100+ channel 수용 가능. 제한된 fiber pair를 최대화하는 데 핵심적.
+
+\vspace{2mm}
 
 \textbf{Lambda (λ)}: 개별 optical lane의 개별 wavelength를 지칭. 각 lambda는 하나의 modulator를 필요로 한다.
 
+\vspace{2mm}
+
 \textbf{DFB (Distributed FeedBack) Laser}: Single wavelength를 생성하는 laser type. Lumentum이 single high-power DFB와 DFB array를 제공.
 
+\vspace{2mm}
+
 \textbf{Quantum-dot Mode-locked Comb}: 여러 wavelength를 동시에 생성하는 laser 기술. Innolume이 개발 중.
+
+\vspace{2mm}
 
 \textbf{Pumped Nonlinear Resonant Comb}: 여러 wavelength를 생성하는 또 다른 접근법. Xscape, Enlightra, Iloomina가 개발 중.
 
@@ -2895,10 +3296,79 @@ Laser design, packaging 및 optical path의 점진적인 개선이 도움이 되
 Single high-power DFB를 위한 Lumentum, DFB array를 위한 Ayar Labs, quantum-dot mode-locked comb를 위한 Innolume, 
 그리고 pumped nonlinear resonant comb를 위한 Xscape, Enlightra 및 Iloomina.
 
-NVIDIA는 또한 잠재적인 대안 laser 솔루션으로 VCSEL array를 탐색하는 것에 대해 논의했다. 
+NVIDIA는 또한 잠재적인 대안 laser 솔루션으로 \textbf{VCSEL array}를 탐색하는 것에 대해 논의했다. 
 Fiber당 데이터 rate는 더 낮을 것이고 일부 thermal 문제가 있을 수 있지만, 
-VCSEL은 전력 및 비용 효율성을 제공할 수 있으며 \textbf{wide-and-slow} application에 적합할 수 있다. 
+VCSEL은 전력 및 비용 효율성을 제공할 수 있으며 wide-and-slow application에 적합할 수 있다. 
 그렇긴 하지만 우리는 이것이 NVIDIA에게 즉각적인 우선순위라고 보지 않는다.
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: VCSEL - 대안적 Laser 기술}]
+
+\textbf{VCSEL (Vertical-Cavity Surface-Emitting Laser)}: 빛이 wafer 표면에 수직으로 방출되는 반도체 laser. 전통적인 edge-emitting laser와 달리 cavity (공진기)가 수직으로 배치되어 빛이 chip의 top surface에서 나온다. 일반적으로 GaAs 또는 InP 기반으로 제조되며, 850nm, 940nm, 1310nm 등 다양한 wavelength를 지원한다.
+
+\vspace{2mm}
+
+\textbf{VCSEL의 구조적 특징}:
+\begin{itemize}
+\item \textbf{수직 cavity}: 두 개의 distributed Bragg reflector (DBR) mirror가 위아래에 있고, 그 사이에 active region이 있다. Cavity 길이가 매우 짧아 (수 µm) single longitudinal mode 동작이 가능하다.
+
+\item \textbf{Surface emission}: 빛이 wafer surface로 방출되므로 wafer-level testing이 용이하고, 2D array로 제조할 수 있다.
+
+\item \textbf{Circular beam}: 대칭적인 구조로 circular beam profile을 생성하여 fiber coupling이 edge-emitting laser보다 용이하다.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{Edge-Emitting Laser vs VCSEL}:
+
+\begin{itemize}
+\item \textbf{Edge-Emitting Laser} (DFB, DBR 등):
+  \begin{itemize}
+  \item Cavity가 수평으로 배치, 빛이 chip edge에서 방출
+  \item 높은 출력 power (수십-수백 mW)
+  \item 좁은 linewidth, single wavelength에 최적화
+  \item 개별 die로 dicing 필요, testing이 복잡
+  \item High-speed, long-distance communication에 적합
+  \end{itemize}
+
+\item \textbf{VCSEL}:
+  \begin{itemize}
+  \item Cavity가 수직, 빛이 surface에서 방출
+  \item 상대적으로 낮은 출력 power (수 mW)
+  \item Wafer-level testing 가능, 2D array 제조 용이
+  \item 낮은 제조 비용, 높은 생산성
+  \item Short-distance, cost-sensitive application에 적합
+  \end{itemize}
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{VCSEL Array}: 여러 개의 VCSEL을 2D grid 형태로 배열한 구조. 단일 wafer에서 수십-수백 개의 VCSEL을 동시에 제조할 수 있어 제조 비용이 크게 절감된다. 각 VCSEL은 독립적으로 modulation 가능하며, parallel optical link를 구현하는 데 이상적이다. Data center의 short-reach application (예: 100m 이내 multimode fiber)에서 널리 사용된다.
+
+\vspace{2mm}
+
+\textbf{CPO에서 VCSEL의 장단점}:
+
+\textbf{장점}:
+\begin{itemize}
+\item \textbf{비용 효율}: Wafer-level 제조로 대량 생산 시 매우 저렴하다. Edge-emitting laser 대비 1/10 수준의 비용이 가능하다.
+\item \textbf{전력 효율}: 낮은 threshold current와 낮은 operating voltage로 전력 소비가 적다.
+\item \textbf{2D array}: 고밀도로 배치 가능하여 많은 수의 parallel channel을 구현할 수 있다.
+\item \textbf{제조 용이}: 성숙한 제조 공정, 높은 yield, 간단한 packaging.
+\end{itemize}
+
+\textbf{단점}:
+\begin{itemize}
+\item \textbf{낮은 출력 power}: 일반적으로 수 mW로, long-distance나 high-loss system에 부적합하다.
+\item \textbf{낮은 data rate}: 개별 VCSEL은 일반적으로 25-56 Gbps로 제한된다. Edge-emitting laser의 100+ Gbps에 비해 낮다.
+\item \textbf{Thermal sensitivity}: 온도에 따라 wavelength가 drift하여 DWDM 같은 tight spacing에 어려움이 있다.
+\item \textbf{Shorter reach}: Multimode fiber에 최적화되어 있어 장거리 transmission에 제한적이다.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{Wide-and-Slow Application}: VCSEL은 "많은 수의 낮은 속도 channel" 접근 방식에 적합하다. 예를 들어, 100개의 25 Gbps VCSEL로 2.5 Tbps를 달성하는 것이 10개의 250 Gbps edge-emitting laser보다 비용 효율적일 수 있다. 그러나 fiber count와 space 제약이 있는 CPO에서는 "fewer, faster lane"이 일반적으로 선호되므로, VCSEL은 특정 cost-optimized niche application에 제한될 것으로 예상된다.
+
+\end{tcolorbox}
 
 \begin{figure}[H]
 \centering
@@ -2916,28 +3386,11 @@ WDM이 중요한 이유는 오늘날 제안된 대부분의 CPO 구현이 optica
 
 \subsection{Modulator Types}
 
-\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: Modulator 선택 - 성능과 Scalability의 Trade-off}]
 
-Modulator 선택은 CPO system의 성능, 전력 효율, scalability를 결정하는 가장 중요한 architectural decision 중 하나이다. 세 가지 주요 modulator type은 각각 명확한 trade-off를 가진다:
 
-\textbf{MZM (Mach-Zehnder Modulator) - "High Performance, Low Density"}:
-- 장점: 가장 낮은 thermal sensitivity, 200 Gbaud 달성 가능, PAM4/QAM 등 advanced modulation 지원, 낮은 chirp
-- 단점: 매우 큰 크기 (~12,000mm²), 높은 전력 소비, 높은 bias voltage 필요
-- 채택: Nubis 등 일부 startup이 사용하지만 제한적
 
-\textbf{MRM (Micro-Ring Modulator) - "High Density, High Complexity"}:
-- 장점: 극도로 compact (25-225mm²), WDM에 최적 (built-in mux/demux), 매우 낮은 전력, 낮은 driving voltage
-- 단점: 10-100배 더 temperature-sensitive, non-linear (higher-order modulation 복잡), 정밀한 control 필요, 표준화 어려움
-- 채택: NVIDIA, TSMC, Ayar Labs, Lightmatter, Ranovus가 집중 - \textbf{업계 주류 선택}
 
-\textbf{EAM (Electro-Absorption Modulator) - "Thermal Resilience, Limited Ecosystem"}:
-- 장점: MRM보다 훨씬 낮은 temperature sensitivity (35°C instant shift 견딤), MZM보다 작고 낮은 전력 (~250mm²)
-- 단점: GeSi reliability 우려, C-band로 제한 (O-band ecosystem 활용 불가), MRM/MZI보다 높은 insertion loss (4-5dB), 별도 multiplexer 필요
-- 채택: Celestial AI가 거의 유일 - XPU 아래 interposer 배치에 thermal tolerance 활용
 
-\textbf{산업적 함의}: NVIDIA와 TSMC의 MRM 선택은 단순한 기술 선호가 아니다. MRM은 구현 난이도가 높지만, TSMC의 advanced CMOS expertise와 결합하여 high-precision, 훌륭한 Q-factor 달성이 가능하다. 이는 결국 \textbf{MRM의 potential bandwidth density 우위}가 CPO scaling의 핵심이 될 것임을 시사한다. 반면 EAM의 thermal advantage는 특정 niche application (co-packaged compute chiplet)에서 차별화 요소가 될 수 있다.
-
-\end{tcolorbox}
 
 Laser가 PIC에 들어가면 electronic signal이 laser의 wavelength로 encoding되는 modulation 단계 (driver에 의해 구동됨)를 거친다. 
 이 과정에 사용되는 세 가지 주요 modulator type은 \textbf{Mach-Zender Modulator (MZM)}, \textbf{Micro-Ring Modulator (MRM)} 및 \textbf{Electro-Absorption Modulator (EAM)}이다. 각 개별 lambda (개별 optical lane의 개별 wavelength)는 하나의 modulator를 필요로 한다.
@@ -2969,6 +3422,103 @@ non-coherent PAM modulation으로 lane당 400G가 가능할 것으로 믿어진�
 \end{itemize}
 startup ecosystem에서 Nubis는 scale-up CPO 솔루션에 주로 MZM을 활용하는 기업 중 하나이다. 
 MZM은 큰 form factor와 제한된 수의 lambda로 인해 startup ecosystem에서 널리 선택되지 않는다.
+
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: Mach-Zehnder Modulator - 빛의 간섭을 이용한 변조}]
+
+\textbf{A. Modulation이란 무엇인가?}
+
+CPO 시스템에서 modulator의 역할은 electrical digital signal (0과 1)을 optical signal (빛의 밝기 변화)로 변환하는 것이다. 
+Laser는 일정한 밝기의 continuous-wave (CW) 빛을 제공하고, modulator는 이 빛을 켜고 끄거나 밝기를 조절하여 데이터를 encoding한다. 
+
+
+\vspace{2mm}
+
+\textbf{B. MZM의 기본 원리: 빛의 간섭 (Interference)}
+\vspace{1mm}
+MZM은 \textbf{빛의 간섭 현상}을 이용한다. 간단한 비유로 이해해보자:
+
+\textbf{물결 비유}: 연못에 두 개의 돌을 동시에 던지면 두 물결이 만나는 곳에서:
+\begin{itemize}
+\item 두 물결의 봉우리가 만나면 → 더 큰 물결 (constructive interference)
+\item 한 물결의 봉우리와 다른 물결의 골이 만나면 → 서로 상쇄 (destructive interference)
+\end{itemize}
+
+빛도 파동이므로 같은 원리가 적용된다!
+
+\vspace{2mm}
+
+\textbf{C. MZM의 동작 과정 - 단계별 설명}
+
+\begin{enumerate}
+\item \textbf{빛을 두 갈래로 나눔}: CW laser에서 나온 빛이 Y-junction (Y자 분기점)에서 두 개의 waveguide arm으로 50:50으로 분할된다.
+
+\item \textbf{한쪽 arm의 phase를 조절}:
+   \begin{itemize}
+   \item 두 arm 중 하나 (또는 둘 다)에 전압을 가한다.
+   \item 전압이 가해지면 silicon의 \textbf{refractive index}가 변한다.
+   \item Refractive index가 변하면 그 arm을 통과하는 빛의 \textbf{속도가 느려지거나 빨라진다}.
+   \item 속도가 변하면 빛의 \textbf{phase}가 shift된다.
+   \end{itemize}
+
+\item \textbf{두 빛을 다시 합침}:
+   \begin{itemize}
+   \item 두 arm의 빛이 다시 만나 결합된다.
+   \item 이때 두 빛의 phase 차이에 따라 간섭이 발생한다.
+   \end{itemize}
+
+\item \textbf{간섭 결과로 밝기 결정}:
+   \begin{itemize}
+   \item \textbf{Phase 차이 = 0}: 두 빛이 같은 위상 → Constructive interference → 밝음 (Binary "1")
+   \item \textbf{Phase 차이 = π (180도)}: 한 빛의 봉우리가 다른 빛의 골과 만남 → Destructive interference → 어두움 (Binary "0")
+   \item \textbf{Phase 차이 = 중간값}: 부분적 간섭 → 중간 밝기 (PAM4 같은 multi-level modulation에 사용)
+   \end{itemize}
+\end{enumerate}
+
+\vspace{2mm}
+
+\textbf{D. 전압과 Phase의 관계}
+
+Silicon photonics MZM은 \textbf{plasma dispersion effect}를 사용한다:
+\begin{itemize}
+\item 전압을 가하면 silicon에 free carrier (전자와 정공)가 주입되거나 제거되어, Free carrier density가 변하면 refractive index가 변한다.
+\item 이 작은 변화도 수 millimeter 길이의 waveguide를 통과하면 충분한 phase shift를 만든다.
+\item 일반적으로 π phase shift를 위해 수 volt의 voltage가 필요하다 (V$_\pi$ parameter).
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{E. 왜 MZM이 "Mach-Zehnder"인가?}
+
+Mach-Zehnder interferometer라는 19세기 물리학 실험 장치에서 이름을 따왔다. Ludwig Mach와 Ludwig Zehnder가 빛의 간섭을 연구하기 위해 개발한 구조와 동일한 원리를 사용한다.
+
+\vspace{2mm}
+
+\textbf{F. MZM의 장점:}
+
+\begin{itemize}
+\item \textbf{낮은 thermal sensitivity}: 두 arm이 나란히 있어 온도가 변해도 \textbf{비슷하게} 영향을 받는다. Phase \textbf{차이}만 중요하므로, 공통 영향은 상쇄된다.
+
+\item \textbf{High linearity}: Phase shift가 voltage에 비례하므로, multi-level modulation (PAM4, QAM)에서 각 level을 정확히 제어할 수 있다.
+
+\item \textbf{낮은 chirp}: Intensity만 변하고 wavelength는 거의 변하지 않는다. 이는 signal quality에 중요하다.
+
+\item \textbf{고속 동작}: Simple structure로 200 Gbps 이상 달성 가능.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{G. MZM의 단점:}
+
+\begin{itemize}
+\item \textbf{큰 크기}: 두 개의 긴 arm이 필요하다 (각각 수 mm). Total footprint가 약 12,000 µm².
+
+\item \textbf{높은 전력}: V$_\pi$가 크고(수 volt), capacitance도 커서 switching power가 높다.
+\end{itemize}
+
+\end{tcolorbox}
+
+
+
 
 \subsubsection{Micro-Ring Modulators (MRMs)}
 MRM은 하나 이상의 straight waveguide에 결합된 compact ring waveguide를 사용한다. 
@@ -3020,6 +3570,156 @@ MRM은 구현하기 어렵지만 확실히 실행 가능하다.
 그들은 잠재적으로 MZM보다 더 높은 bandwidth density를 가능하게 할 수 있다. 
 그래서 TSMC, NVIDIA 및 Ayar Labs, Lightmatter 및 Ranovus와 같은 많은 CPO 기업이 이 기술 roadmap에 집중한다.
 
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: Micro-Ring Modulator - Resonance를 이용한 compact 변조}]
+
+\textbf{A. MRM의 기본 구조}
+
+MRM은 circular ring waveguide가 하나 이상의 straight bus waveguide 옆에 위치한 구조이다:
+
+\begin{itemize}
+\item \textbf{Ring waveguide}: 직경이 수-수십 µm인 원형 waveguide로 빛이 ring 내부를 순환할 수 있다.
+
+\item \textbf{Bus waveguide}: Ring 옆을 지나가는 직선 waveguide로 Input port에서 through port로 연결되며, 때로는 drop port도 있다.
+
+\item \textbf{Coupling gap}: Ring과 bus waveguide 사이의 간격 (수백 nm)이고, 이를 통해 evanescent field coupling이 발생하여 빛이 ring으로 전달될 수 있다.
+\end{itemize}
+
+MRM의 전체 footprint는 매우 작다: 직경 5-15 µm ring은 약 25-225 µm² 면적만 차지한다. 이는 MZM (약 12,000 µm²)보다 50-500배 작다.
+
+\vspace{2mm}
+
+\textbf{B. Resonance의 핵심 개념}
+
+MRM의 동작은 \textbf{optical resonance}에 기반한다:
+
+\begin{itemize}
+\item \textbf{Resonance condition}: 빛의 wavelength가 ring의 circumference (둘레)의 정수배와 일치할 때 발생한다.
+  \[
+  m \lambda = n_{eff} \times 2\pi R
+  \]
+  여기서 $m$은 정수 (mode number), $\lambda$는 wavelength, $n_{eff}$는 effective refractive index, $R$은 ring radius이다.
+
+\item \textbf{Resonance 시}: 빛이 ring을 여러 번 순환하면서 constructive interference가 발생한다. 각 round trip마다 빛이 같은 위상으로 돌아오면 빛의 intensity가 ring 내부에서 축적된다 (buildup).
+
+\item \textbf{Off-resonance 시}: Wavelength가 맞지 않으면 각 round trip마다 phase가 맞지 않아 destructive interference가 발생하고, 빛은 ring에 들어가지 못하고 bus waveguide를 따라 그냥 통과한다.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{C. Q-factor (Quality Factor)}
+
+Q-factor는 ring resonator의 성능을 나타내는 핵심 parameter이다:
+
+\begin{itemize}
+\item \textbf{정의}: Q = $\lambda_0 / \Delta\lambda$, 여기서 $\lambda_0$는 resonance wavelength, $\Delta\lambda$는 resonance peak의 폭 (full width at half maximum).
+
+\item \textbf{의미}: 높은 Q는 sharp한 resonance peak를 의미한다. 빛이 ring 내부에서 많은 round trip을 하며 오래 머문다.
+
+\item \textbf{TSMC의 expertise}: High-precision fabrication으로 uniform ring geometry와 smooth sidewall을 만들어 high Q-factor를 달성한다. 이것이 TSMC가 MRM에서 경쟁 우위를 갖는 이유이다.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{D. Modulation 원리 - Resonance Tuning}
+
+MRM은 electrical signal로 resonance wavelength를 shift하여 modulation을 수행한다:
+
+\begin{enumerate}
+\item \textbf{전압 인가}: Ring에 인접한 전극에 voltage를 가한다.
+
+\item \textbf{Refractive index 변화}: 
+   \begin{itemize}
+   \item MZM과 마찬가지로 plasma dispersion effect 사용
+   \item Free carrier injection/depletion으로 $n_{eff}$ 변화
+   \end{itemize}
+
+\item \textbf{Resonance wavelength shift}:
+   \begin{itemize}
+   \item $\Delta \lambda = \lambda_0 \times (\Delta n_{eff} / n_{eff})$
+   \end{itemize}
+
+\item \textbf{Intensity modulation}:
+   \begin{itemize}
+   \item \textbf{"On" state (Binary "1")}: Voltage = 0, resonance가 input laser wavelength와 align 
+   \item \textbf{"Off" state (Binary "0")}: Voltage applied, resonance shift → off-resonance
+   \end{itemize}
+\end{enumerate}
+
+\vspace{2mm}
+
+\textbf{F. WDM과의 완벽한 궁합}
+
+\begin{itemize}
+\item \textbf{Built-in wavelength selectivity}: 각 ring은 특정 wavelength에만 반응한다. 여러 ring을 array로 배치하면 각각 다른 wavelength를 처리한다.
+
+\item \textbf{Multiplexing 자동 수행}: Separate mux/demux device 없이 ring 자체가 wavelength routing을 수행한다.
+  \begin{itemize}
+  \item Ring 1: $\lambda_1$ (예: 1550.0 nm) → Drop port 1
+  \item Ring 2: $\lambda_2$ (예: 1550.8 nm) → Drop port 2
+  \item ...
+  \end{itemize}
+
+\item \textbf{Compact array}: 수십 개의 ring을 작은 면적에 집적 가능. DWDM (40-80 channel)을 mm² 규모로 구현할 수 있다.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{G. 장점의 이유}
+
+\begin{itemize}
+\item \textbf{극도로 compact}: Ring 하나가 25-225 µm². Long waveguide arm이 필요 없다.
+
+\item \textbf{낮은 전력}: Small modal volume → 적은 carrier 필요, 낮은 voltage로 충분한 shift ($<$ 1 V).
+
+\item \textbf{WDM 최적화}: Inherent wavelength selectivity로 자연스럽게 mux/demux 기능 제공.
+
+\item \textbf{낮은 chirp}: Absorption 변화가 아닌 resonance shift 사용.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{H. 단점의 이유}
+
+\begin{itemize}
+\item \textbf{극도로 높은 thermal sensitivity (10-100배)}:
+  \begin{itemize}
+  \item Resonance wavelength는 $n_{eff}$에 매우 민감하다: $\Delta \lambda / \Delta T \approx$ 0.1 nm/°C
+  \item MZM은 두 arm의 phase \textbf{차이}만 중요하므로 공통 온도 변화는 상쇄되지만, MRM은 절대적인 resonance position이 중요하므로 온도 영향을 직접 받는다
+  \end{itemize}
+
+\item \textbf{정밀한 thermal control 필요}:
+  \begin{itemize}
+  \item Active thermal tuning: 각 ring에 heater를 배치하여 resonance를 실시간 조정
+  \item Feedback control loop: Photodetector로 monitor하고 heater power 조절
+  \item 이는 추가 전력 소비와 복잡한 control system을 요구한다
+  \end{itemize}
+
+\item \textbf{표준화 어려움}:
+  \begin{itemize}
+  \item 각 ring design은 정밀한 dimension (radius, gap, width)을 요구한다
+  \item 제조 variation에 민감하여 각 device마다 개별 calibration 필요
+  \item Vendor 간 interoperability 달성이 어렵다
+  \end{itemize}
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{I. NVIDIA와 TSMC가 MRM을 선택한 이유}
+
+\begin{itemize}
+\item \textbf{Scaling 우위}: CPO의 핵심은 제한된 space에 최대한 많은 lane을 집적하는 것이다. MRM의 50-500배 작은 footprint는 결정적 이점이다.
+
+\item \textbf{WDM 필수성}: Fiber count 제약으로 각 fiber당 여러 wavelength를 전송해야 한다. MRM은 이를 위해 태어난 구조이다.
+
+\item \textbf{전력 효율}: Data center scale에서 전력 소비는 critical하다. MRM의 낮은 driving voltage는 장기적으로 큰 절약을 의미한다.
+\end{itemize}
+
+\end{tcolorbox}
+
+
+
+
+
 \subsubsection{Electro-Absorption Modulators (EAM)}
 \href{https://people.engr.tamu.edu/spalermo/ecen689_oi/lecture10_ee689_eam_tx.pdf}{EAM은 signal을 modulate}하여 applied voltage에 기반하여 빛을 흡수하는 능력을 변경한다. 
 더 구체적으로 EAM에 낮거나 voltage가 applied되지 않으면 device는 들어오는 laser 빛의 대부분을 통과시켜 transparent하거나 \textbf{open}하게 보이게 한다. 
@@ -3068,6 +3768,189 @@ EAM은 MRM 및 MZI와 비교하여 여러 이점을 가지고 있다:
 \end{itemize}
 전반적으로 EAM은 현재 CPO 구현에서 널리 사용되지 않으며, Celestial AI가 이 접근 방식을 적극적으로 추구하는 몇 안 되는 기업 중 하나로 두드러진다.
 
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: Electro-Absorption Modulator - 흡수를 이용한 변조}]
+
+\textbf{A. EAM의 기본 원리}
+
+EAM은 MZM (간섭)이나 MRM (공진)과 완전히 다른 메커니즘인 \textbf{흡수 (absorption)}를 이용한다:
+
+\begin{itemize}
+\item \textbf{핵심 아이디어}: Semiconductor material의 빛 흡수 능력을 전압으로 제어한다.
+  \begin{itemize}
+  \item 전압이 없을 때 → Material이 transparent (투명) → 빛이 통과 → "Open" state (Binary "1")
+  \item 전압이 있을 때 → Material이 absorbing (흡수) → 빛이 차단 → "Closed" state (Binary "0")
+  \end{itemize}
+
+\item \textbf{물리적 메커니즘}: Franz-Keldysh effect 또는 Quantum-Confined Stark Effect (QCSE)를 사용한다.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{B. Band Gap과 Absorption의 관계}
+
+Semiconductor의 광 흡수는 band gap에 의해 결정된다:
+
+\begin{itemize}
+\item \textbf{Band gap (에너지 띠 간격)}: Valence band와 conduction band 사이의 에너지 차이.
+
+\item \textbf{Absorption rule}: 
+  \begin{itemize}
+  \item Photon energy $> $ Band gap → 흡수됨 (전자가 valence에서 conduction으로 excite)
+  \item Photon energy $< $ Band gap → 투과됨 (흡수할 수 없음)
+  \end{itemize}
+
+\item \textbf{Wavelength와의 관계}: 
+  \[
+  E_{photon} = \frac{hc}{\lambda}
+  \]
+  짧은 wavelength (높은 energy) → 흡수 확률 높음 \\
+  긴 wavelength (낮은 energy) → 흡수 확률 낮음
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{C. Franz-Keldysh Effect - 전압으로 Band Gap 조절}
+
+Franz-Keldysh effect는 electric field가 semiconductor의 band structure를 변형시키는 현상이다:
+
+\begin{enumerate}
+\item \textbf{전압 없음 (0 V)}:
+   \begin{itemize}
+   \item Band gap이 원래 값 (예: GeSi의 경우 약 0.8 eV = 1550 nm에 해당)
+   \item 1550 nm 빛은 band gap보다 약간 낮은 energy → 거의 흡수되지 않음
+   \item Material이 transparent → 빛이 통과
+   \end{itemize}
+
+\item \textbf{전압 인가 (수 volt)}:
+   \begin{itemize}
+   \item Strong electric field가 band edge를 "기울인다" (tilt)
+   \item Effective band gap이 감소하여 1550 nm 빛의 photon energy가 band gap보다 커져 빛이 흡수되어 차단됨
+   \end{itemize}
+
+\item \textbf{핵심}: Electric field로 band gap을 조절하여 특정 wavelength에 대한 absorption을 on/off.
+\end{enumerate}
+
+\vspace{2mm}
+
+\textbf{D. GeSi EAM의 구조}
+
+Silicon photonics에서 사용되는 EAM은 일반적으로 Germanium-Silicon (GeSi) 합금 기반이다:
+
+\begin{itemize}
+\item \textbf{Active region}: GeSi layer (수백 nm 두께)가 waveguide 옆이나 위에 배치된다.
+
+\item \textbf{전극 구조}: p-i-n diode 또는 p-n junction 형태로 전압을 가한다.
+
+\item \textbf{Waveguide coupling}: 빛이 GeSi region을 통과하며, absorption이 on/off되면서 intensity가 modulate된다.
+
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{E. C-band vs O-band - Band Gap의 제약}
+
+GeSi EAM의 가장 큰 제약은 natural band gap이 C-band에 맞춰져 있다는 것이다:
+
+\begin{itemize}
+\item \textbf{GeSi natural band gap}: 약 0.8 eV → 1550 nm 근처 (C-band: 1530-1565 nm)
+
+\item \textbf{O-band 문제}: O-band (1260-1360 nm)는 더 짧은 wavelength (높은 energy)이다.
+
+\item \textbf{결과}: GeSi EAM은 C-band에 lock-in된다. 이는 ecosystem compatibility 문제를 야기한다.
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{F. InP EAM - O-band의 대안}
+
+InP (Indium Phosphide) 기반 EAM은 O-band에 자연스럽게 맞는다:
+
+\begin{itemize}
+\item \textbf{InP band gap}: 약 0.95 eV → 1310 nm 근처 (O-band)
+
+\item \textbf{EML (Electro-Absorption Modulated Laser)}: CW DFB laser + InP EAM을 하나의 package로 통합한 것. Datacom transceiver (예: 800G DR8)에서 널리 사용된다.
+
+\item \textbf{장점}: O-band ecosystem 활용 가능, 성숙한 기술, 높은 interoperability.
+
+\item \textbf{단점 (CPO에 부적합)}:
+  \begin{itemize}
+  \item 작은 wafer size (3", 6") → 높은 unit cost
+  \item InP를 silicon에 coupling하기 어려움
+  \item Silicon photonics PIC에 통합하기 복잡
+  \end{itemize}
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{G. 장점의 이유}
+
+\begin{itemize}
+\item \textbf{Thermal robustness}:
+  \begin{itemize}
+  \item Absorption은 band gap에 의해 결정되고, band gap은 온도에 상대적으로 덜 민감하다. 반면 MRM은 Resonance position이 온도에 극도로 민감 (0.1 nm/°C)
+  \item EAM: 35°C instant shift 견딤, 80°C ambient 견딤을 허용하여 XPU 아래 interposer에 배치 가능 (수백 watt dissipation)
+  \end{itemize}
+
+\item \textbf{MZM 대비 작고 낮은 전력}:
+  \begin{itemize}
+  \item Size: 250 µm² vs 12,000 µm²
+  \item MZM의 큰 크기 → 높은 voltage swing (0-5V) → high power consumption
+  \item EAM은 compact하여 낮은 voltage와 전력으로 동작
+  \end{itemize}
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{H. 단점의 이유}
+
+\begin{itemize}
+\item \textbf{GeSi reliability 우려}: Germanium은 silicon보다 mechanical stability와 endurance가 낮다
+
+\item \textbf{C-band lock-in}: 대부분의 datacom은 O-band 사용하나 GeSi EAM은 C-band만 가능 → O-band chiplet ecosystem에 참여 불가
+
+\item \textbf{높은 insertion loss (4-5 dB)}: Absorption mechanism 자체가 빛을 소모하기에 MRM/MZM (3-5 dB)보다 약간 높음
+
+\item \textbf{별도 multiplexer 필요}: MRM은 Built-in wavelength selectivity로 자체 mux/demux가 가능하나 
+EAM은 Wavelength selectivity 없어 CWDM/DWDM 위해 별도 component 필요
+
+\end{itemize}
+
+\vspace{2mm}
+
+\textbf{I. Celestial AI의 전략적 선택}
+
+\begin{itemize}
+\item \textbf{Application의 특수성}: Optical chiplet을 XPU 아래 interposer에 직접 배치한다.
+  \begin{itemize}
+  \item Extreme thermal environment (수백 watt dissipation)
+  \item MRM은 이 환경에서 작동 불가
+  \item EAM의 35°C instant thermal tolerance가 결정적
+  \end{itemize}
+
+\item \textbf{Niche positioning}: High-bandwidth compute chiplet interconnect에 특화.
+  \begin{itemize}
+  \item Network switch (NVIDIA)와는 다른 use case
+  \item Thermal tolerance가 scalability보다 중요
+  \end{itemize}
+\end{itemize}
+
+\end{tcolorbox}
+
+\vspace{2mm}
+
+
+
+   
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: Modulator 선택 - 성능과 Scalability의 Trade-off}]
+
+  \vspace{2mm}
+  
+  \textbf{산업적 함의}: NVIDIA와 TSMC의 MRM 선택은 단순한 기술 선호가 아니다. MRM은 구현 난이도가 높지만, TSMC의 advanced CMOS expertise와 결합하여 high-precision, 훌륭한 Q-factor 달성이 가능하다. 이는 결국 \textbf{MRM의 potential bandwidth density 우위}가 CPO scaling의 핵심이 될 것임을 시사한다. 반면 EAM의 thermal advantage는 특정 niche application (co-packaged compute chiplet)에서 차별화 요소가 될 수 있다.
+  
+\end{tcolorbox}
+  
+
+
 \subsection{OE roadmap -- scaling OEs}
 오늘날 사용 가능한 Optical Engine은 일반적으로 1.6T에서 3.2T 사이의 aggregate bandwidth를 제공한다. NVIDIA의 Quantum CPO는 1.6T engine을 포함하며, Spectrum용 3.2T 버전이 계획되어 있다. Broadcom은 Bailly용 6.4T OE를 선보였지만 form factor가 매우 크고 (NVIDIA의 2-3배 너비) 두 개의 FAU를 필요로 하므로 bandwidth density는 NVIDIA의 제공과 유사할 수 있다. Marvell의 6.4T OE도 동일한 경우로 2개의 FAU를 필요로 하므로 큰 footprint를 차지한다. Marvell의 OE는 우리가 아는 한 곧 production system에 들어가지도 않는다.
 
@@ -3081,28 +3964,6 @@ EAM은 MRM 및 MZI와 비교하여 여러 이점을 가지고 있다:
 하지만 만약 우리가 free hand로 차세대 interconnect를 design할 수 있다면 이 세대와 그 이후를 위해 더 큰 bandwidth를 가능하게 하는 접근 방식은 무엇일까?
 
 \subsection{Key approaches for scaling bandwidth}
-
-\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Bandwidth Scaling의 핵심 Parameter}]
-
-\textbf{Baud Rate}: 초당 전송되는 symbol 수. 현재 advanced system은 100 Gbaud에서 작동하며, 업계는 200 Gbaud를 추진 중. Higher baud rate는 modulator가 더 높은 frequency에서 switch하도록 요구.
-
-\textbf{Modulation Scheme}:
-- \textbf{NRZ (Non-Return-to-Zero)}: Symbol당 1 bit 전송
-- \textbf{PAM4 (4-level Pulse Amplitude Modulation)}: 4개의 다른 amplitude로 symbol당 2 bit 전송
-- \textbf{PAM6}: Symbol당 ~2.6 bits 전송 (연구 단계)
-- \textbf{PAM8}: Symbol당 3 bits 전송 (연구 단계)
-- \textbf{DP-16QAM}: 두 orthogonal plane, 각각 4 amplitude × 4 phase = 총 256 가능 signal (signal당 8 bit)
-
-\textbf{Lane Speed 계산}: Baud Rate × Bits per Symbol = Lane Speed
-- 예: 100 Gbaud × 2 bits (PAM4) = 200 Gbit/s per lane
-
-\textbf{Fast and Narrow}: FAU당 더 적은 수의 fiber (높은 두 자릿수)와 각 fiber pair에서 빠른 link. Higher baud rate와 advanced modulation에 의존.
-
-\textbf{Slow and Wide}: 훨씬 더 많은 수의 fiber pair (finer pitch)와 개별 fiber pair당 느린 bandwidth. Fiber density와 WDM에 의존.
-
-\textbf{Fiber Pitch}: Fiber 간격. 현재 최소 127µm (mm당 8 fiber), 목표는 80µm pitch와 multicore fiber.
-
-\end{tcolorbox}
 
 Co-packaged optical engine에서 bandwidth를 scaling하기 위한 주요 접근 방식을 논의해보자:
 
@@ -3123,7 +3984,7 @@ Electrical 측면이 해결되면 다음 과제는 fiber를 통해 얼마나 많
 \begin{enumerate}
   \item \textbf{More fiber pairs}: Fiber density는 fiber pitch에 의해 제한되며 단일 FAU 내의 전체 fiber 수는 yield가 문제가 되기 전에 manufacturing 가능한 것에 의해 제한된다. 현재 fiber의 최소 pitch는 127 micron (µm)이며, mm당 최대 8개의 fiber를 의미한다. 업계는 일정 면적이 수용할 수 있는 fiber 수를 더욱 scaling하기 위해 80-µm pitch와 multicore fiber를 향해 작업하고 있다. 그러나 더 많은 fiber를 부착하는 것은 manufacturability 과제를 가져온다: 
   
- A) 여전히 많은 manual process를 포함하는 fiber를 정렬하는 것은 yield loss에 취약하며, FAU yield는 정렬해야 하는 각 successive fiber와 함께 저하된다; Ficontec과 같은 회사가 제공하는 automation tool이 있지만 여전히 낮은 throughput에 시달린다, 
+ A) 여전히 많은 manual process를 포함하는 fiber를 정렬하는 것은 yield loss에 취약하며, FAU yield는 정렬해야 하는 각 successive fiber와 함께 저하된다. Ficontec과 같은 회사가 제공하는 automation tool이 있지만 여전히 낮은 throughput에 시달린다. 
   
  B) Coupling 선택도 중요하다: Edge coupling은 fiber array를 단일 row로 제한하는 반면, grating coupling은 여러 row를 지원할 수 있다. 현재 우리가 본 가장 sizeable한 fiber array는 36 fiber를 가진 Nubis의 2D FAU이다.
 
@@ -3147,7 +4008,7 @@ Electrical 측면이 해결되면 다음 과제는 fiber를 통해 얼마나 많
 \subsection{CPO adoption pace and deployment challenges}
 NVIDIA의 첫 번째 CPO 제품은 2H 2025에 사용 가능한 InfiniBand CPO와 H2 2026에 사용 가능한 Ethernet CPO switch를 갖춘 backend scale-out switch용이 될 것이다. 
 우리는 이 초기 단계가 주로 market test와 supply chain 성숙도를 높이기 위한 preparatory phase 역할을 할 것이라고 생각한다. 
-우리는 2026년 total shipment volume이 10-15k unit 범위가 될 것으로 예상한다.
+우리는 2026년 total shipment volume이 10-15K unit 범위가 될 것으로 예상한다.
 
 배포가 더 나아가고 더 빠르게 진행되어 진정으로 ubiquitous하게 되려면 CPO 채택에 대한 더 설득력 있는 rationale이 있어야 할 것이다. 
 두 가지 가능성은 CPO 채택으로 인한 극적인 total cost of ownership 이점이거나, switch ASIC에서 switch box의 front panel로 signal을 구동하는 데 필요한 electrical LR SerDes가 hard speed 또는 range wall에 부딪히는 경우일 수 있다.
@@ -3158,32 +4019,44 @@ Fiber 관리, front plate density, external laser는 모두 과제인 필수 부
 
 \subsection{Proprietary solutions vs standards}
 
+
+
+
+
+
+
 \begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: CPO의 근본적 딜레마 - Interoperability vs Innovation Speed}]
 
 CPO는 pluggable optics의 성공 model과 근본적으로 다른 paradigm을 요구하며, 이는 업계에 심각한 딜레마를 제시한다.
 
+\vspace{2mm}
 \textbf{Pluggable의 성공 공식}:
 - Electrical: OIF가 표준 관리
+
 - Optical: IEEE 802.3 PMD layer가 modulation, lane speed, wavelength 등 정의
+
 - Mechanical: MSA가 form factor와 multi-vendor interoperability 보장
+
 → 결과: 완벽한 plug-and-play, multi-vendor ecosystem, 경쟁적 가격
 
+\vspace{2mm}
 \textbf{CPO의 현실}:
-CPO는 단순히 optics를 package 내부로 이동시킨 것이 아니다. 전체 \textbf{system-level 문제}가 된다:
+CPO는 단순히 optics를 package 내부로 이동시킨 것이 아니라 전체 \textbf{system-level 문제}가 된다:
+
 - Fiber management가 chassis 내부로 이동
+
 - Front plate density 최적화 필요
+
 - Modulator architecture 선택이 wavelength band 결정 (O-band vs C-band)
+
 - External laser module 통합
+
 - FAU coupling precision과 thermal management
 
+\vspace{2mm}
 이러한 복잡성 때문에 NVIDIA와 같은 vendor는 \textbf{end-to-end 솔루션}을 제공해야 한다. 고객이 여러 vendor의 component를 mix-and-match할 수 없다.
 
-\textbf{딜레마의 본질}:
-1. \textbf{Standards-first 접근}: Interoperability 보장, multi-vendor 경쟁, 낮은 가격 → 하지만 innovation이 느려지고, 누가 초기 R\&D 비용을 감당하나?
-2. \textbf{Proprietary-first 접근}: 빠른 innovation, vendor가 investment 회수 가능 → 하지만 customer lock-in, 제한된 채택
-
-\textbf{현재 상황}: CPO는 "wild west" 단계. NVIDIA Spectrum-X, Broadcom Bailly/Humboldt는 각각 완전히 다른 proprietary solution. OIF의 새로운 high-density interconnect 노력 (CPX paradigm)이 이를 해결하려 하지만, 성공 여부는 미지수.
-
+\vspace{2mm}
 \textbf{산업적 함의}: 역설적이게도, CPO의 광범위한 채택은 초기에 proprietary solution의 성공에 달려 있을 수 있다. NVIDIA와 같은 major vendor가 volume을 창출하고 supply chain을 성숙시켜야만, 그 다음에 표준화와 interoperability 논의가 의미를 가질 것이다. Pluggable이 즉시 표준화된 것이 아니라 GBIC → SFP → SFP+ → QSFP → QSFP-DD로 진화했듯이, CPO도 유사한 경로를 밟을 가능성이 높다.
 
 \end{tcolorbox}
@@ -3216,50 +4089,108 @@ OIF, IEEE standard 및 MSA의 조합을 통해 pluggable transceiver는 광범�
 
 이를 위한 한 가지 접근 방식은 co-packaged OE가 wavelength, speed 및 modulation에 대한 Ethernet standard 또는 MSA와 align하는 photonic component---laser, modulator 및 photodiode와 같은---와 함께 표준화된 fiber interface를 따르는 component level에서 표준화된 솔루션을 채택하는 것일 수 있다. 이는 진정한 interoperability를 가능하게 하여 고객이 한 vendor에서 모든 장비를 조달할 필요 없이 다양한 vendor의 제품을 mix and match할 수 있게 한다. OE가 socketable하다면 operator는 failure의 경우 쉽게 교체할 수 있다. 그러한 표준화는 또한 고객을 위한 비용을 낮출 수 있는 더 경쟁적이고 강력한 multi-vendor 시장을 만들 것이다. 또한 고객이 한 vendor에 얽매이지 않고 lead time, 가격 또는 고유한 기능을 기반으로 다양한 vendor를 선택할 수 있게 한다.
 
+
+
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Interoperability - 상호운용성의 이해}]
+
+  \textbf{Interoperability (상호운용성)}: 서로 다른 vendor나 manufacturer가 생산한 component, system, device들이 표준화된 interface와 protocol을 통해 함께 작동할 수 있는 능력. IT 산업에서 multi-vendor ecosystem과 경쟁적 시장을 가능하게 하는 핵심 원칙이다.
+  
+  \vspace{2mm}
+  
+  \textbf{A. Interoperability의 세 가지 차원}
+  \vspace{2mm}
+
+  \textbf{1. Electrical Interoperability}:
+  \begin{itemize}
+  \item Signal voltage level, timing, protocol이 표준화되어 있어 다른 vendor의 chip들이 전기적으로 통신 가능
+  \item 예: PCIe, Ethernet PHY layer - Intel chip과 AMD chip이 동일한 electrical interface로 통신
+  \end{itemize}
+  
+  \textbf{2. Optical Interoperability}:
+  \begin{itemize}
+  \item Wavelength, modulation format, encoding scheme이 표준화
+  \item 예: IEEE 802.3 PMD (Physical Medium Dependent) layer가 100GBASE-SR4의 850nm wavelength, NRZ modulation 정의
+  \end{itemize}
+  
+  \textbf{3. Mechanical Interoperability}:
+  \begin{itemize}
+  \item Physical form factor, connector type, pinout, thermal spec이 표준화
+  \item 예: QSFP-DD MSA (Multi-Source Agreement)가 module 크기, cage design, heat dissipation 정의
+  \end{itemize}
+    
+  \textbf{B. Pluggable Optics(SFP, QSFP, OSFP)에서의 성공 사례}
+    
+  \begin{itemize}
+  \item \textbf{Plug-and-play}: 고객이 Finisar, Lumentum, Innolight 등 어느 vendor의 transceiver든 구매하여 Cisco, Arista, Juniper 등 어느 switch에든 꽂을 수 있다.
+  
+  \item \textbf{Hot-swap}: System 전원을 끄지 않고 transceiver 교체 가능.
+  
+  \item \textbf{Multi-vendor sourcing}: 고객이 가격, 품질, 공급 안정성을 기준으로 여러 vendor 중 선택 가능. 이는 경쟁을 촉진하고 가격을 낮춘다.
+  
+  \item \textbf{표준화된 ecosystem}: 누구나 MSA spec을 따라 product를 만들 수 있어 innovation과 competition 활성화.
+  \end{itemize}
+  
+  \textbf{C. CPO에서의 Interoperability 도전}
+  
+  \vspace{2mm}
+  
+  \textbf{System-level integration}:
+  \begin{itemize}
+  \item Optical engine이 package 내부에 permanently bonded
+  \item OE architecture (MRM/MZM/EAM)가 wavelength band (O/C-band) 결정
+  \item Modulator 선택이 laser source와 tightly coupled
+  \item FAU design이 coupling method (GC/EC)와 연결
+  \item Chassis 내부 fiber routing, thermal management, power distribution이 모두 상호 의존적
+  \end{itemize}
+  
+  \textbf{결과}: Component 하나를 변경하면 전체 system re-design 필요. 고객이 "NVIDIA OE + Broadcom laser + Lumentum FAU"처럼 mix-and-match 불가능.
+  
+  \vspace{2mm}
+  
+  \textbf{D. 역사적 교훈: Pluggable의 진화}
+  
+  \vspace{2mm}
+
+  Pluggable도 처음부터 완전히 표준화되지 않았다:
+  \begin{itemize}
+  \item GBIC (1990s) → 각 vendor 독자 구현
+  \item SFP (2000s) → MSA로 mechanical 표준화 시작
+  \item SFP+, QSFP (2010s) → IEEE 802.3이 optical spec 추가
+  \item QSFP-DD (2020s) → 완전한 interoperability 달성
+  \end{itemize}
+  
+  이 과정은 약 20년 소요되었고, 초기에는 proprietary solution이 시장을 개척했다.
+  
+  \vspace{2mm}
+  
+  \textbf{E. CPO의 가능한 경로}
+  
+  \begin{enumerate}
+  \item \textbf{Phase 1 (현재-2027)}: Proprietary solution 주도
+     - NVIDIA Spectrum-X, Broadcom Bailly는 각자의 closed ecosystem
+     - Early adopter (hyperscaler)가 single vendor와 긴밀히 협력
+     - Volume 증가로 supply chain 성숙
+  
+  \item \textbf{Phase 2 (2028-2030)}: De facto standard 등장
+     - 시장 리더의 architecture가 reference가 됨
+     - Follower들이 compatible solution 개발
+     - Partial interoperability (예: 동일 wavelength band끼리)
+  
+  \item \textbf{Phase 3 (2030+)}: Full standardization
+     - OIF CPX 같은 formal standard 완성
+     - Multi-vendor ecosystem 형성
+     - Commoditization 시작
+  \end{enumerate}
+  
+  \textbf{핵심 통찰}: Interoperability는 CPO 채택의 필수 조건이 아니다. 오히려 초기에는 proprietary solution의 성공이 long-term interoperability의 foundation을 만들 수 있다. NVIDIA 같은 vendor가 volume을 만들어야 그 다음 standardization이 의미를 갖는다.
+  
+  \end{tcolorbox}
+  
+
+
+
+
 \subsection{Serviceability and reliability}
-
-\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: CPO의 아킬레스건 - Serviceability의 현실}]
-
-NVIDIA가 CPO의 reliability 이점을 강조하지만, \textbf{serviceability는 datacenter operator의 가장 큰 우려사항}이다. 이는 단순한 engineering 문제가 아닌 \textbf{operational paradigm shift}이다.
-
-\textbf{Pluggable의 운영 모델 (현재)}:
-1. Front panel에서 고장난 transceiver 감지
-2. Hot-swap으로 새 transceiver 교체 (< 5분)
-3. 전문 technician 불필요, downtime 최소화
-→ "Finger-replaceable unit" 수준의 serviceability
-
-\textbf{CPO의 운영 현실 (Quantum-X CPO switch 예시)}:
-1. 36개 OE가 substrate에 flip-chip bonding
-2. 각 OE에서 fiber ribbon이 fiber cassette를 통해 routing
-3. FAU는 detachable하지만 chassis 내부 깊숙이 위치
-4. 고장 발생 시:
-   - Chassis를 열어야 함
-   - 다른 fiber를 방해하지 않고 고장난 FAU 제거
-   - Cassette를 통해 새 FAU를 정밀하게 재부착
-   - Sub-micron accuracy로 submicron waveguide에 정렬
-   - Cramped하고 thermally active한 환경에서 작업
-
-\textbf{비용 함의}:
-- 숙련된 technician 필요 (일반 datacenter operator 불가)
-- 장시간 downtime (시간 단위)
-- Collateral damage risk (인접 fiber 손상 가능성)
-- Preventive maintenance complexity 증가
-
-\textbf{Reliability vs Serviceability Paradox}:
-CPO는 이론적으로 더 reliable할 수 있다 (fewer connector, shorter electrical path). 하지만 실제 datacenter 운영에서 중요한 것은:
-- \textbf{MTBF (Mean Time Between Failures)} < \textbf{MTTR (Mean Time To Repair) × Operational Complexity}
-
-현재 CPO는 MTBF가 더 높을 수 있지만, MTTR × Complexity가 훨씬 크다. 100,000개의 port를 운영하는 hyperscaler에게는 \textbf{"How fast can I fix it?"이 "How often does it fail?"보다 더 중요할 수 있다}.
-
-\textbf{산업적 함의}: CPO가 mainstream이 되려면, serviceability model의 근본적 혁신이 필요하다:
-- Socketable OE with known-good-die testing
-- Tool-less FAU replacement mechanism
-- Automated fiber alignment system
-- 또는 MTBF가 MTTR × Complexity를 압도할 정도로 높아야 함
-
-이것이 해결되지 않으면, CPO는 tier-1 hyperscaler의 mission-critical deployment가 아닌, niche high-performance application으로 제한될 수 있다.
-
-\end{tcolorbox}
 
 CPO가 광범위하게 채택되기 전에 해결되어야 하는 문제는 fiber coupling에서 나온다. 
 Pluggable optical module에서 silicon photonics device에 fiber를 연결하는 것은 상대적으로 간단한 반면, 
