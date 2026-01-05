@@ -269,7 +269,11 @@ CPO로의 완전한 전환은 DSP optics 대비 훨씬 더 큰 절감을 제공�
 \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Optical Engine (OE)과 External Light Source (ELS)}]
 \textbf{Optical Engine (OE)}: 전기 신호를 광 신호로 변환하는 광학 컴포넌트로, CPO 시스템에서 스위치 ASIC에 직접 패키징됩니다. 기존 트랜시버의 복잡한 DSP 기능을 제거하여 전력 효율을 높입니다.
 
+\vspace{2mm}
+
 \textbf{External Light Source (ELS)}: CPO 시스템에서 여러 optical engine에 레이저 광을 공급하는 중앙집중식 레이저 소스입니다. 각 트랜시버마다 별도의 레이저를 사용하는 것보다 효율적이며, 유지보수가 용이합니다.
+
+\vspace{2mm}
 
 \textbf{전력 Tradeoff 상세 계산}:
 
@@ -298,10 +302,16 @@ CPO 전환 시 전력 변화:
   \end{itemize}
 \end{itemize}
 
-\textbf{핵심 통찰}: Transceiver의 대폭적인 전력 감소(37.8\%p)가 switch의 증가분(12.7\%p)을 크게 상회하여, 전체적으로 약 25\% 순 절감을 달성합니다. 이는 transceiver를 제거하는 것이 아니라 "더 효율적인 형태로 switch에 통합"하는 전략입니다.
+\textbf{핵심 통찰}: 
+\begin{itemize}
 
-\textbf{핵심}: CPO는 transceiver를 제거하여 큰 전력 절감을 달성하지만, 그 기능을 스위치 내부로 이동시키므로 스위치 자체의 전력 소비는 증가합니다. 이는 "전력을 없애는" 것이 아니라 "더 효율적인 방식으로 재배치"하는 것입니다.
+\item Transceiver의 대폭적인 전력 감소(37.8\%p)가 switch의 증가분(12.7\%p)을 크게 상회하여, 전체적으로 약 25\% 순 절감을 달성합니다. 이는 transceiver를 제거하는 것이 아니라 "더 효율적인 형태로 switch에 통합"하는 전략입니다.
+
+\item CPO는 transceiver를 제거하여 큰 전력 절감을 달성하지만, 그 기능을 스위치 내부로 이동시키므로 스위치 자체의 전력 소비는 증가합니다. 이는 "전력을 없애는" 것이 아니라 "더 효율적인 방식으로 재배치"하는 것입니다.
+
+\end{itemize}
 \end{tcolorbox}
+
 
 이 전력 절감의 일부는 switch에 \textbf{Optical Engine (OE)}과 \textbf{External Light Source (ELS)}를 추가함으로써 상쇄되며, 
 이는 이제 전체적으로 23\% 더 많은 전력을 소비한다. 
@@ -319,16 +329,16 @@ shuffle이 high radix non-CPO switch를 사용할 때 patch panel이나 octopus 
 \begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: High Radix Network와 Internal Shuffle}]
 
 \textbf{1. 핵심 개념 정의}
-
-\textbf{Radix}: Switch가 제공하는 port 수. High radix는 많은 수의 port를 의미합니다 (예: 128포트 이상).
-
-\textbf{Shuffle}: 여러 switch의 port를 상호 연결하여 하나의 논리적 대형 switch처럼 작동하도록 만드는 재배치 작업.
-
-\vspace{0.3cm}
+\begin{itemize}
+\item\textbf{Radix}: Switch가 제공하는 port 수이며 High radix는 많은 수의 port를 의미합니다 (예: 128포트 이상).
+\item\textbf{Shuffle}: 여러 switch의 port를 상호 연결하여 하나의 논리적 대형 switch처럼 작동하도록 만드는 재배치 작업.
+\end{itemize}
 
 \textbf{2. 구체적 예시: 512포트 달성하기}
 
-\textbf{Traditional 방식 (Non-CPO High Radix):}
+\vspace{3mm}
+
+\textbf{A. Traditional 방식 (Non-CPO High Radix):}
 \begin{itemize}
 \item \textbf{하드웨어 구성}: 4개의 128포트 switch를 별도로 설치
 \item \textbf{External shuffle 필요}:
@@ -342,7 +352,6 @@ shuffle이 high radix non-CPO switch를 사용할 때 patch panel이나 octopus 
   \begin{itemize}
   \item \textbf{물리적 복잡도}: 수백 개의 cable을 수동으로 연결하고 관리
   \item \textbf{설치 시간}: 며칠이 소요되는 cable routing
-  \item \textbf{디버깅 악몽}: Cable 하나가 잘못 연결되면 전체 network 문제 발생
   \item \textbf{공간 낭비}: Patch panel, cable tray, shuffle box가 차지하는 rack 공간
   \item \textbf{전력 낭비}: 각 pluggable transceiver와 긴 cable path에서 신호 손실
   \item \textbf{확장성 한계}: Port 추가 시 전체 cabling을 재구성해야 함
@@ -352,7 +361,7 @@ shuffle이 high radix non-CPO switch를 사용할 때 patch panel이나 octopus 
 
 \vspace{2cm}
 
-\textbf{CPO 방식 (Internal Shuffle):}
+\textbf{B. CPO 방식 (Internal Shuffle):}
 \begin{itemize}
 \item \textbf{하드웨어 구성}: 단일 switch box (예: Spectrum 6800)
 \item \textbf{Internal shuffle 메커니즘}:
@@ -370,7 +379,6 @@ shuffle이 high radix non-CPO switch를 사용할 때 patch panel이나 octopus 
   \item \textbf{추상화 완성}: 사용자는 "512포트 단일 switch"로만 인식
   \item \textbf{공간 절약}: Patch panel과 cable tray 불필요
   \item \textbf{전력 효율}: 짧은 optical path로 신호 손실 최소화
-  \item \textbf{안정성}: Factory에서 검증된 내부 연결로 연결 오류 제로
   \end{itemize}
 \item \textbf{사용자 관점}: "그냥 512포트 switch 하나"로 \textbf{완전히 추상화}됨
 \end{itemize}
@@ -424,7 +432,6 @@ L-layer network에서 k port의 switch로 지원 가능한 최대 host 수: $\te
 \item Twin-port transceiver
 \end{itemize}
 
-이것이 CPO의 high radix가 network layer를 줄이고 연결 가능한 GPU 수를 극적으로 늘리는 이유입니다.
 \end{tcolorbox}
 
 간단히 언급하자면, L-layer network에서 k port의 switch를 사용하여 지원할 수 있는 최대 host 수는 다음과 같다:
@@ -515,9 +522,8 @@ non-CPO X800-Q3400은 72개의 OSFP cage를 갖추고 있으며, 800G에서 144 
 
 \vspace{0.15cm}
 
-\textbf{4. Twin-Port의 내부 구조}
+\textbf{4. Twin-Port의 내부 구조(1.6T twin-port transceiver)}
 
-하나의 1.6T twin-port transceiver 내부:
 \begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
 \item \textbf{2개의 독립적인 laser}: 각각 800G 신호 생성
 \item \textbf{2개의 독립적인 modulator}: 각각 데이터를 광 신호로 변환
@@ -678,7 +684,7 @@ Copper는 이러한 low-latency, high-throughput connection에서 탁월하다.
 그러나 위에서 언급했듯이, copper의 제한된 도달 거리는 \textbf{world size (단일 scale-up domain 내에서 연결할 수 있는 GPU 수)}를 제한한다.
 
 \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: World Size와 그 중요성}]
-\textbf{World Size}: 단일 scale-up domain 내에서 직접 연결될 수 있는 GPU의 총 개수를 의미합니다. 
+\textbf{World Size}: 단일 scale-up domain 내에서 직접 연결될 수 있는 GPU의 총 개수. 
 
 \textbf{중요성}:
 \begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
@@ -704,7 +710,6 @@ Copper는 이러한 low-latency, high-throughput connection에서 탁월하다.
 
 \textbf{대조}: Optical fiber는 빛으로 신호를 전송하므로 전자기 간섭, 저항, skin effect 등의 문제가 없어 수 km까지도 신호 무결성을 유지할 수 있습니다. 이것이 long-reach 연결에 optics가 필수적인 물리적 이유입니다.
 
-World size 증가는 inference workload에서 더 많은 compute, memory capacity, memory bandwidth를 제공하여 모델 성능을 극적으로 향상시킵니다.
 \end{tcolorbox}
 
 Scale-up world size를 증가시키는 것은 compute scaling의 매우 중요한 방법이다. 
@@ -957,10 +962,6 @@ Datacenter의 먼지와 같은 평범하게 들리는 문제조차도 fiber 끝�
 \item 진짜 큰 돈은 GPU에서 나옴 → GPU CPO가 진짜 목표
 \end{itemize}
 
-\vspace{0.15cm}
-
-\textbf{최종 목표}는 scale-up CPO입니다. 하지만 그곳에 도달하려면 scale-out으로 먼저 길을 닦아야 합니다. 이는 기술적 필연성이자 비즈니스적 현명함입니다.
-
 \end{tcolorbox}
 
 이제 CPO가 무엇인지, 기술적 고려사항, 과제 및 오늘날 ecosystem의 상태에 대해 심도 있게 이야기해보자.
@@ -1108,7 +1109,7 @@ Bandwidth density & 0.4 Tbps/mm & 1.8-10 Tbps/mm & 5-25배↑ \\
 \begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: SerDes, PCB Trace, Flyover Cable}]
 \setlength{\parskip}{2pt}
 
-\textbf{SerDes (Serializer/Deserializer)}:
+\textbf{1. SerDes (Serializer/Deserializer)}:
 \begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
 \item \textbf{정의}: 병렬 데이터를 직렬로 변환(전송) 또는 직렬을 병렬로 변환(수신)하는 회로
 \item \textbf{필요성}: Chip 내부는 넓은 병렬 bus(예: 256 bits), 외부는 좁은 직렬 lane(예: 1 bit)
@@ -1116,9 +1117,9 @@ Bandwidth density & 0.4 Tbps/mm & 1.8-10 Tbps/mm & 5-25배↑ \\
 \item \textbf{Deserializer}: 1 bit씩 받아서 256 bits로 재구성
 \end{itemize}
 
-\vspace{0.1cm}
 
-\textbf{Long-Reach (LR) SerDes vs Short-Reach (SR) SerDes}:
+\textbf{2. Long-Reach (LR) SerDes vs Short-Reach (SR) SerDes}:
+\vspace{2mm}
 
 \begin{tabular}{|l|c|c|}
 \hline
@@ -1136,9 +1137,9 @@ Equalization & 강력 (FFE, DFE) & 최소 \\
 \hline
 \end{tabular}
 
-\vspace{0.1cm}
+\vspace{2mm}
 
-\textbf{왜 LR SerDes가 더 많은 전력을 쓰는가?}
+\textbf{3. 왜 LR SerDes가 더 많은 전력을 쓰는가?}
 \begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
 \item \textbf{Pre-emphasis}: 전송 전 고주파수 성분 증폭 (signal degradation 예상)
 \item \textbf{Equalization}: 수신 후 주파수 왜곡 보정
@@ -1146,9 +1147,7 @@ Equalization & 강력 (FFE, DFE) & 최소 \\
 \item \textbf{더 높은 swing voltage}: 긴 거리로 인한 loss 보상
 \end{itemize}
 
-\vspace{0.1cm}
-
-\textbf{PCB (Printed Circuit Board) Trace}:
+\textbf{4. PCB (Printed Circuit Board) Trace}:
 \begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
 \item \textbf{정의}: PCB 기판 위/내부에 etching된 copper 경로
 \item \textbf{CCL (Copper-Clad Laminate)}: PCB의 기본 재료
@@ -1160,9 +1159,7 @@ Equalization & 강력 (FFE, DFE) & 최소 \\
 \item \textbf{Insertion loss}: 고주파수일수록 exponentially 증가
 \end{itemize}
 
-\vspace{0.1cm}
-
-\textbf{Flyover Cable}:
+\textbf{5. Flyover Cable}:
 \begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
 \item \textbf{정의}: PCB trace를 우회하여 \textbf{공중}으로 연결하는 고품질 cable
 \item \textbf{장점}: 
@@ -1228,6 +1225,7 @@ Serviceability & 최고 & 중간 & 낮음 & 최저 \\
 \vspace{0.1cm}
 
 \textbf{1. OBO (On-Board Optics)}
+\vspace{2mm}
 
 \textbf{개념}: Optical engine을 system PCB 위에 직접 배치 (chassis 내부, ASIC package 외부)
 
@@ -1390,6 +1388,7 @@ Noise immunity & 중간 & 높음 \\
 용도 & RF, video & High-speed data \\
 \hline
 \end{tabular}
+\vspace{2mm}
 
 \textbf{Twinax의 장점}:
 \begin{itemize}[itemsep=1pt,parsep=0pt,topsep=2pt]
@@ -1820,7 +1819,7 @@ DSP 사용으로 인한 추가 비용과 전력 요구사항은 total cost of ow
 \end{itemize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[breakable,colback=red!5!white,colframe=red!75!black,title=\textbf{핵심 인사이트: DSP - Public Enemy Number One}]
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: DSP - Public Enemy Number One}]
 \setlength{\parskip}{2pt}
 
 \textbf{18K GB300 Cluster의 DSP 전력 비용}
@@ -1922,7 +1921,7 @@ Optical DSP에 전력을 공급하는 데 더 많은 에너지가 필요하다. 
 \caption{Source: G Keeler, DARPA 2019, SemiAnalysis}
 \end{figure}
 
-\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{핵심 인사이트: Figure of Merit (FoM) - Interconnect의 성적표}]
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: Figure of Merit (FoM) - Interconnect의 성적표}]
 \setlength{\parskip}{2pt}
 
 \textbf{1. Figure of Merit (FoM)란?}
@@ -2059,7 +2058,7 @@ HPC application을 위한 off-package I/O density는 단일 flip-chip BGA packag
 \caption{Source: TSMC}
 \end{figure}
 
-\begin{tcolorbox}[breakable,colback=red!5!white,colframe=red!75!black,title=\textbf{핵심 인사이트: I/O Wall - AI 시대의 새로운 Bottleneck}]
+\begin{tcolorbox}[breakable,colback=blue!10!white,colframe=blue!40!black,title=\textbf{핵심 인사이트: I/O Wall - AI 시대의 새로운 Bottleneck}]
 \setlength{\parskip}{2pt}
 
 \textbf{1. The Great Imbalance}
@@ -2386,7 +2385,7 @@ Reticle sized chip의 long edge에서 이것은 최대 330 Tbit/s (41TByte/s)의
 \caption{Source: SemiAnalysis}
 \end{figure}
 
-\begin{tcolorbox}[breakable,colback=green!5!white,colframe=green!75!black,title=\textbf{기술 용어: Wide I/O vs SerDes - Paradigm Shift}]
+\begin{tcolorbox}[breakable,colback=blue!5!white,colframe=blue!75!black,title=\textbf{기술 용어: Wide I/O vs SerDes - Paradigm Shift}]
 \setlength{\parskip}{2pt}
 
 \textbf{1. SerDes vs Wide I/O의 근본적 차이}
